@@ -6,4 +6,3 @@ export default function Dummy() {
     <div>dsadsadsa</div>
   )
 }
-
