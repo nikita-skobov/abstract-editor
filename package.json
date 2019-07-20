@@ -2,7 +2,7 @@
   "name": "abstract-editor",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "./node_modules/.bin/babel src --out-dir lib --ignore src/__tests__/ --ignore src/setupTests.js",
     "test": "react-scripts test --verbose false"
