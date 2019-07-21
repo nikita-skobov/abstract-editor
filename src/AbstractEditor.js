@@ -4,6 +4,7 @@ export default function AbstractEditor(props) {
   const {
     children,
     outputTemplate,
+    onUpdate,
   } = props
 
   const fieldNames = Object.keys(outputTemplate)
@@ -32,6 +33,9 @@ export default function AbstractEditor(props) {
       {
         onUpdate: (newValue) => {
           defaultTemplate[name] = newValue
+          onUpdate({ ...defaultTemplate })
+          // calling the user supplied update function
+          // to give them the most recent template
         },
       },
     )
