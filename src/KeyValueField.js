@@ -1,18 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import Label from './Label'
 import { KEY_VALUE_CLASS } from './constants'
 
 const propTypes = {
   fieldKey: PropTypes.string,
   fieldValue: PropTypes.string,
   className: PropTypes.string,
+  valueComponent: PropTypes.func,
 
   // eslint-disable-next-line
   fieldType: PropTypes.string,
 }
 
 const defaultProps = {
+  valueComponent: Label,
   className: KEY_VALUE_CLASS,
   fieldType: 'key-value',
   fieldKey: '',
@@ -29,13 +32,6 @@ export default class KeyValueField extends Component {
     this.state = {
       fieldKey: props.fieldKey,
       fieldValue: props.fieldValue,
-    }
-
-    if (props.valueComponent) {
-      const VC = props.valueComponent
-      this.ValueComponent = (
-        <VC onUpdate={this.valueChange} />
-      )
     }
   }
 
@@ -90,22 +86,15 @@ export default class KeyValueField extends Component {
       fieldKey,
       fieldValue,
     } = this.state
-    const { className } = this.props
+    const { className, valueComponent } = this.props
 
-    const { ValueComponent } = this
-    if (ValueComponent) {
-      return (
-        <div className={className}>
-          <input
-            type="text"
-            defaultValue={fieldKey}
-            onChange={this.keyChange}
-          />
-          :
-          {ValueComponent}
-        </div>
-      )
-    }
+    const ValueComponent = valueComponent
+    const vc = (
+      <ValueComponent
+        currentValue={fieldValue}
+        onUpdate={this.valueChange}
+      />
+    )
 
     return (
       <div className={className}>
@@ -115,12 +104,7 @@ export default class KeyValueField extends Component {
           onChange={this.keyChange}
         />
         :
-        <input
-          type="text"
-          defaultValue={fieldValue}
-          name="text"
-          onChange={this.valueChange}
-        />
+        {vc}
       </div>
     )
   }
