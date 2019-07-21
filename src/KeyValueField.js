@@ -9,11 +9,14 @@ export default function AbstractField(props) {
 
   return (
     <div>
-      <input type="string" defaultValue={fieldKey} />
+      <input
+        type="text"
+        defaultValue={fieldKey}
+        onChange={({ target }) => { onUpdate(target.value, fieldValue) }}
+      />
       :
       <input
         type="text"
-        placeholder={fieldValue}
         defaultValue={fieldValue}
         name="text"
         onChange={({ target }) => { onUpdate(fieldKey, target.value) }}

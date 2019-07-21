@@ -28,6 +28,23 @@ describe('StringField component', () => {
     expect(valInput.props.defaultValue).toBe(valueDefault)
   })
 
+  it('should callback both the key and the value upon change', () => {
+    const onUpdate = jest.fn(() => {})
+    const keyDefault = 'kd'
+    const valueDefault = 'vd'
+    const wrap = mount(<Comp fieldKey={keyDefault} fieldValue={valueDefault} onUpdate={onUpdate} />)
+    const inputs = wrap.find('input')
+    const keyInput = inputs.at(0)
+    const valInput = inputs.at(1)
+    keyInput.simulate('change', { target: { value: 'newkey' } })
+    expect(onUpdate).toHaveBeenCalledWith('newkey', 'vd')
+
+    console.log(keyInput.getElement())
+
+    valInput.simulate('change', { target: { value: 'newvalue' } })
+    expect(onUpdate).toHaveBeenCalledWith('newkey', 'newvalue')
+  })
+
   // it('should render the name inside the span if provided a showField attribute', () => {
   //   const name = 'bob'
   //   const wrap1 = mount(<Comp showField name={name} />)
