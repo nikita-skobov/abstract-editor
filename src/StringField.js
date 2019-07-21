@@ -1,12 +1,13 @@
 import React from 'react'
 
-export default function StringField(props) {
+export default function AbstractField(props) {
   const {
     onUpdate,
     showField,
     name,
     displayName,
-    type = 'text', // default is text
+    fieldType,
+    inputType = 'text', // default is text
   } = props
 
   const showName = showField && (displayName || name)
@@ -15,7 +16,7 @@ export default function StringField(props) {
     <div>
       <span>{showField && showName}</span>
       <input
-        type={type}
+        type={inputType}
         name="text"
         onChange={({ target }) => { onUpdate(target.value) }}
       />

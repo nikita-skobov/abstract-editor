@@ -19,7 +19,7 @@ describe('StringField component', () => {
 
   it('should allow you to override the type attribute', () => {
     const override = 'textarea'
-    const wrap = mount(<Comp type={override} />)
+    const wrap = mount(<Comp inputType={override} />)
     const input = wrap.find('input')
     expect(input.exists()).toBe(true)
     expect(input.prop('type')).toBe(override)
