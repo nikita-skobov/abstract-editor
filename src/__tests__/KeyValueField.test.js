@@ -36,10 +36,15 @@ describe('StringField component', () => {
     const inputs = wrap.find('input')
     const keyInput = inputs.at(0)
     const valInput = inputs.at(1)
-    keyInput.simulate('change', { target: { value: 'newkey' } })
-    expect(onUpdate).toHaveBeenCalledWith('newkey', 'vd')
 
-    valInput.simulate('change', { target: { value: 'newvalue' } })
-    expect(onUpdate).toHaveBeenCalledWith('newkey', 'newvalue')
+    const currentKey = keyDefault
+    const currentValue = valueDefault
+    const newKey = 'newkey'
+    const newValue = 'newvalue'
+    keyInput.simulate('change', { target: { value: newKey } })
+    expect(onUpdate).toHaveBeenCalledWith(newKey, currentValue, currentKey)
+
+    valInput.simulate('change', { target: { value: newValue } })
+    expect(onUpdate).toHaveBeenCalledWith(newKey, newValue, newKey)
   })
 })

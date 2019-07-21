@@ -4,13 +4,20 @@ export default class KeyValueField extends Component {
   constructor(props) {
     super(props)
 
+    this.keyChange = this.keyChange.bind(this)
+    this.valueChange = this.valueChange.bind(this)
+
     this.state = {
       fieldKey: props.fieldKey,
       fieldValue: props.fieldValue,
     }
 
-    this.keyChange = this.keyChange.bind(this)
-    this.valueChange = this.valueChange.bind(this)
+    if (props.valueComponent) {
+      const VC = props.valueComponent
+      this.ValueComponent = (
+        <VC onUpdate={this.valueChange} />
+      )
+    }
   }
 
   keyChange({ target }) {
@@ -31,18 +38,29 @@ export default class KeyValueField extends Component {
     })
   }
 
-  valueChange({ target }) {
+  valueChange(e) {
+    const { target } = e
     const { props } = this
-    const { value } = target
-    // value is the fieldValue!
+
+    let newValue
+
+    if (target) {
+      // this means it is a value change from an input field
+      const { value } = target
+      newValue = value
+    } else {
+      // otherwise it is a custom value change
+      // where the argument IS the new value
+      newValue = e
+    }
 
     this.setState((prevState) => {
       const newState = {
         fieldKey: prevState.fieldKey,
-        fieldValue: value,
+        fieldValue: newValue,
       }
       const { onUpdate } = props
-      onUpdate(prevState.fieldKey, value, prevState.fieldKey)
+      onUpdate(prevState.fieldKey, newValue, prevState.fieldKey)
 
       return newState
     })
@@ -53,6 +71,22 @@ export default class KeyValueField extends Component {
       fieldKey,
       fieldValue,
     } = this.state
+
+    const { ValueComponent } = this
+
+    if (ValueComponent) {
+      return (
+        <div>
+          <input
+            type="text"
+            defaultValue={fieldKey}
+            onChange={this.keyChange}
+          />
+          :
+          {ValueComponent}
+        </div>
+      )
+    }
 
     return (
       <div>
