@@ -3,6 +3,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import Comp from '../KeyValueField'
+import Label from '../Label'
 
 import { KEY_VALUE_CLASS as COMP_CLASS } from '../constants'
 
@@ -80,7 +81,15 @@ describe('KeyValueField component', () => {
     expect(firstDiv2.hasClass(override)).toBe(true)
   })
 
-  // it('should allow you to override the label component', () => {
+  it('should use Label as the default value component', () => {
+    const wrap = mount(<Comp />)
+    expect(wrap.find(Label).exists()).toBe(true)
+  })
 
-  // })
+  it('should allow you to override the default value component', () => {
+    const customValueComponent = () => <br />
+    const wrap = mount(<Comp valueComponent={customValueComponent} />)
+    expect(wrap.find(Label).exists()).not.toBe(true)
+    expect(wrap.find(customValueComponent).exists()).toBe(true)
+  })
 })
