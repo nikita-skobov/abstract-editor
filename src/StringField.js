@@ -6,17 +6,17 @@ export default function AbstractField(props) {
     showField,
     name,
     displayName,
-    fieldType,
-    inputType = 'text', // default is text
+    type = 'text', // default is text
   } = props
 
   const showName = showField && (displayName || name)
 
+  // otherwise assume it is a string input
   return (
     <div>
       <span>{showField && showName}</span>
       <input
-        type={inputType}
+        type={type}
         name="text"
         onChange={({ target }) => { onUpdate(target.value) }}
       />
