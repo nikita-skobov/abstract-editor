@@ -30,7 +30,6 @@ export default class AbstractEditor extends Component {
       const Temp2 = props.keyValueComponent || KeyValueField
       this.KeyValueComp = (
         <Temp2
-          fieldType="key-value"
           onUpdate={this.updateKeyValue}
         />
       )
@@ -117,7 +116,6 @@ export default class AbstractEditor extends Component {
             child,
             {
               onUpdate: this.updateKeyValue,
-              fieldType: 'key-value',
             },
           )
         }
