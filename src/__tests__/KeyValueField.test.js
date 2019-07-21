@@ -6,7 +6,7 @@ import Comp from '../KeyValueField'
 
 import { KEY_VALUE_CLASS as COMP_CLASS } from '../constants'
 
-describe('StringField component', () => {
+describe('KeyValueField component', () => {
   it('should render', () => {
     const wrap = mount(<Comp />)
     expect(wrap.find('div').exists()).toBe(true)
