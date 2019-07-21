@@ -42,34 +42,4 @@ describe('StringField component', () => {
     valInput.simulate('change', { target: { value: 'newvalue' } })
     expect(onUpdate).toHaveBeenCalledWith('newkey', 'newvalue')
   })
-
-  // it('should render the name inside the span if provided a showField attribute', () => {
-  //   const name = 'bob'
-  //   const wrap1 = mount(<Comp showField name={name} />)
-  //   const wrap2 = mount(<Comp showField="true" name={name} />)
-  //   const wrap3 = mount(<Comp showField={false} name={name} />)
-  //   const span1 = wrap1.find('span')
-  //   const span2 = wrap2.find('span')
-  //   const span3 = wrap3.find('span')
-  //   expect(span1.text()).toBe(name)
-  //   expect(span2.text()).toBe(name)
-  //   expect(span3.text()).not.toBe(name)
-  // })
-
-  // it('should render a displayName instead of name if provided', () => {
-  //   const name = 'bob'
-  //   const displayName = 'Mr. Bob'
-  //   const wrap = mount(<Comp showField displayName={displayName} name={name} />)
-  //   const span = wrap.find('span')
-  //   expect(span.text()).toBe(displayName)
-  // })
-
-  // it('should call the onUpdate function if the input value is changed', () => {
-  //   const value = 'hi'
-  //   const onUpdate = jest.fn(() => {})
-  //   const wrap = mount(<Comp onUpdate={onUpdate} name="tim" />)
-  //   const input = wrap.find('input')
-  //   input.simulate('change', { target: { value } })
-  //   expect(onUpdate).toHaveBeenCalledWith(value)
-  // })
 })
