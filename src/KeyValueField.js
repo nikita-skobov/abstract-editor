@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { KEY_VALUE_CLASS } from './constants'
+
 const propTypes = {
   fieldKey: PropTypes.string,
   fieldValue: PropTypes.string,
+  className: PropTypes.string,
 
   // eslint-disable-next-line
   fieldType: PropTypes.string,
 }
 
 const defaultProps = {
+  className: KEY_VALUE_CLASS,
   fieldType: 'key-value',
   fieldKey: '',
   fieldValue: '',
@@ -86,11 +90,12 @@ export default class KeyValueField extends Component {
       fieldKey,
       fieldValue,
     } = this.state
+    const { className } = this.props
 
     const { ValueComponent } = this
     if (ValueComponent) {
       return (
-        <div>
+        <div className={className}>
           <input
             type="text"
             defaultValue={fieldKey}
@@ -103,7 +108,7 @@ export default class KeyValueField extends Component {
     }
 
     return (
-      <div>
+      <div className={className}>
         <input
           type="text"
           defaultValue={fieldKey}

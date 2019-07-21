@@ -4,6 +4,8 @@ import React from 'react'
 import { mount } from 'enzyme'
 import Comp from '../KeyValueField'
 
+import { KEY_VALUE_CLASS as COMP_CLASS } from '../constants'
+
 describe('StringField component', () => {
   it('should render', () => {
     const wrap = mount(<Comp />)
@@ -47,4 +49,38 @@ describe('StringField component', () => {
     valInput.simulate('change', { target: { value: newValue } })
     expect(onUpdate).toHaveBeenCalledWith(newKey, newValue, newKey)
   })
+
+  it('should allow you to override the value component', () => {
+    const customValueComponent = 'custom-value-component'
+    const defaultWrap = mount(<Comp />)
+    const wrap = mount(
+      <Comp
+        fieldKey=""
+        fieldType="key-value"
+        valueComponent={() => <input type="text" className={customValueComponent} />}
+      />,
+    )
+
+    expect(wrap.find(`.${customValueComponent}`).exists()).toBe(true)
+    expect(defaultWrap.find(`.${customValueComponent}`).exists()).not.toBe(true)
+  })
+
+  it('should have default prop: fieldType=key-value', () => {
+    const wrap = mount(<Comp />)
+    expect(wrap.prop('fieldType')).toBe('key-value')
+  })
+
+  it(`should allow the user to override the className (default should be ${COMP_CLASS})`, () => {
+    const override = 'my-custom-class'
+    const wrap1 = mount(<Comp />)
+    const wrap2 = mount(<Comp className={override} />)
+    const firstDiv1 = wrap1.find('div').first()
+    const firstDiv2 = wrap2.find('div').first()
+    expect(firstDiv1.hasClass(COMP_CLASS)).toBe(true)
+    expect(firstDiv2.hasClass(override)).toBe(true)
+  })
+
+  // it('should allow you to override the label component', () => {
+
+  // })
 })
