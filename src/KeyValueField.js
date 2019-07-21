@@ -25,7 +25,7 @@ export default class KeyValueField extends Component {
         fieldValue: prevState.fieldValue,
       }
       const { onUpdate } = props
-      onUpdate(value, prevState.fieldValue)
+      onUpdate(value, prevState.fieldValue, prevState.fieldKey)
 
       return newState
     })
@@ -42,7 +42,7 @@ export default class KeyValueField extends Component {
         fieldValue: value,
       }
       const { onUpdate } = props
-      onUpdate(prevState.fieldKey, value)
+      onUpdate(prevState.fieldKey, value, prevState.fieldKey)
 
       return newState
     })
