@@ -1,4 +1,19 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
+const propTypes = {
+  fieldKey: PropTypes.string,
+  fieldValue: PropTypes.string,
+
+  // eslint-disable-next-line
+  fieldType: PropTypes.string,
+}
+
+const defaultProps = {
+  fieldType: 'key-value',
+  fieldKey: '',
+  fieldValue: '',
+}
 
 export default class KeyValueField extends Component {
   constructor(props) {
@@ -106,3 +121,6 @@ export default class KeyValueField extends Component {
     )
   }
 }
+
+KeyValueField.propTypes = propTypes
+KeyValueField.defaultProps = defaultProps
