@@ -108,7 +108,19 @@ export default class AbstractEditor extends Component {
           },
         )
       } else if (fieldType === 'key-value') {
-        newElm = child
+        const { onUpdate: childUpdate } = child.props
+        if (childUpdate && typeof childUpdate === 'function') {
+          // if it already has the function no need to clone
+          newElm = child
+        } else {
+          newElm = React.cloneElement(
+            child,
+            {
+              onUpdate: this.updateKeyValue,
+              fieldType: 'key-value',
+            },
+          )
+        }
       } else {
         newElm = React.cloneElement(
           child,
