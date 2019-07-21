@@ -58,10 +58,21 @@ export default class AbstractEditor extends Component {
 
   addKeyValue() {
     this.setState((prevState) => {
+      const { props } = this
       const { stateChildren } = prevState
       const lastChild = stateChildren[stateChildren.length - 1]
       const firstNChildren = stateChildren.slice(0, stateChildren.length - 1)
-      const newChildren = [...firstNChildren, this.KeyValueComp, lastChild]
+
+      let { indentation } = this.KeyValueComp.props
+      if (!indentation) indentation = 0
+
+      const indentBy = props.indentBy || 1
+      const nextKeyValue = {
+        ...this.KeyValueComp,
+        props: { ...this.KeyValueComp.props, indentation: indentation + indentBy },
+      }
+
+      const newChildren = [...firstNChildren, nextKeyValue, lastChild]
       const newState = { stateChildren: newChildren }
       return newState
     })
