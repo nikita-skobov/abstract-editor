@@ -39,8 +39,6 @@ describe('StringField component', () => {
     keyInput.simulate('change', { target: { value: 'newkey' } })
     expect(onUpdate).toHaveBeenCalledWith('newkey', 'vd')
 
-    console.log(keyInput.getElement())
-
     valInput.simulate('change', { target: { value: 'newvalue' } })
     expect(onUpdate).toHaveBeenCalledWith('newkey', 'newvalue')
   })
