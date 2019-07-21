@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 const propTypes = {
   fieldKey: PropTypes.string,
   fieldValue: PropTypes.string,
+  indentation: PropTypes.number,
 
   // eslint-disable-next-line
   fieldType: PropTypes.string,
 }
 
 const defaultProps = {
+  indentation: 0,
   fieldType: 'key-value',
   fieldKey: '',
   fieldValue: '',
@@ -88,10 +90,12 @@ export default class KeyValueField extends Component {
     } = this.state
 
     const { ValueComponent } = this
+    const { indentation } = this.props
+    console.log(`rendering with indentation: ${indentation}`)
 
     if (ValueComponent) {
       return (
-        <div>
+        <div style={{ paddingLeft: indentation }}>
           <input
             type="text"
             defaultValue={fieldKey}
@@ -104,7 +108,7 @@ export default class KeyValueField extends Component {
     }
 
     return (
-      <div>
+      <div style={{ paddingLeft: indentation }}>
         <input
           type="text"
           defaultValue={fieldKey}
