@@ -15,46 +15,28 @@ export default class AbstractEditor extends Component {
     this.updateKeyValue = this.updateKeyValue.bind(this)
 
 
-    if (fieldType === 'map' && props.addKeyValueComponent) {
-      const Temp = props.addKeyValueComponent
+    if (fieldType === 'map') {
+      const Temp = props.addKeyValueComponent || AddKeyValueField
       this.AddKeyValueComp = (
         <Temp
           fieldType="add-key-value"
           onUpdate={this.addKeyValue}
         />
       )
-      // override the user provided element, and use that for future
+      // override the user provided element (if provided, otherwise use the default),
+      // and use that for future
       // rendering to avoid overriding during render.
-    } else if (fieldType === 'map') {
-      this.AddKeyValueComp = (
-        <AddKeyValueField
-          fieldType="add-key-value"
-          onUpdate={this.addKeyValue}
-        />
-      )
-      // user did not provide an AddKeyValueField component
-      // so use the default one.
-    }
 
-    if (fieldType === 'map' && props.keyValueComponent) {
-      const Temp = props.keyValueComponent
+      const Temp2 = props.keyValueComponent || KeyValueField
       this.KeyValueComp = (
-        <Temp
+        <Temp2
           fieldType="key-value"
           onUpdate={this.updateKeyValue}
         />
       )
-      // user providedd a key value component, override it
+      // override the key value component with either the user
+      // provided prop, or the default
       // to avoid doing so during render.
-    } else if (fieldType === 'map') {
-      this.KeyValueComp = (
-        <KeyValueField
-          fieldType="key-value"
-          onUpdate={this.updateKeyValue}
-        />
-      )
-      // user did not provide a KeyValueField component
-      // so use the default one.
     }
 
 
