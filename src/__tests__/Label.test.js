@@ -1,7 +1,7 @@
 /* global describe it expect jest */
 // eslint-disable-next-line
 import React from 'react'
-import { mount } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import Comp from '../Label'
 
 import { LABEL_CLASS as COMP_CLASS } from '../constants'
@@ -23,8 +23,8 @@ describe('Label component', () => {
   })
 
   it('should render a span if not editable', () => {
-    const wrap = mount(<Comp onUpdate={noop} editable={false} />)
-    expect(wrap.html().substr(0, 4)).toBe('<spa')
+    const wrap = shallow(<Comp onUpdate={noop} editable={false} />)
+    expect(wrap.first().type()).toBe('span')
   })
 
   it('should render the currentValue prop either as input value, or span text', () => {
