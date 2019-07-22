@@ -8,6 +8,7 @@ const propTypes = {
   fieldKey: PropTypes.string,
   fieldValue: PropTypes.string,
   className: PropTypes.string,
+  keyComponent: PropTypes.func,
   valueComponent: PropTypes.func,
 
   // eslint-disable-next-line
@@ -16,6 +17,7 @@ const propTypes = {
 
 const defaultProps = {
   valueComponent: Label,
+  keyComponent: Label,
   className: KEY_VALUE_CLASS,
   fieldType: 'key-value',
   fieldKey: '',
@@ -86,9 +88,17 @@ export default class KeyValueField extends Component {
       fieldKey,
       fieldValue,
     } = this.state
-    const { className, valueComponent } = this.props
+    const { className, valueComponent, keyComponent } = this.props
 
     const ValueComponent = valueComponent
+    const KeyComponent = keyComponent
+
+    const kc = (
+      <KeyComponent
+        currentValue={fieldKey}
+        onUpdate={this.keyChange}
+      />
+    )
     const vc = (
       <ValueComponent
         currentValue={fieldValue}
@@ -98,11 +108,7 @@ export default class KeyValueField extends Component {
 
     return (
       <div className={className}>
-        <input
-          type="text"
-          defaultValue={fieldKey}
-          onChange={this.keyChange}
-        />
+        {kc}
         :
         {vc}
       </div>

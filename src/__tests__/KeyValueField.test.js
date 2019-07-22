@@ -86,10 +86,10 @@ describe('KeyValueField component', () => {
     expect(wrap.find(Label).exists()).toBe(true)
   })
 
-  it('should allow you to override the default value component', () => {
-    const customValueComponent = () => <br />
-    const wrap = mount(<Comp valueComponent={customValueComponent} />)
+  it('should allow you to override the default value and key components', () => {
+    const customComponent = () => <br />
+    const wrap = mount(<Comp valueComponent={customComponent} keyComponent={customComponent} />)
     expect(wrap.find(Label).exists()).not.toBe(true)
-    expect(wrap.find(customValueComponent).exists()).toBe(true)
+    expect(wrap.find(customComponent).exists()).toBe(true)
   })
 })
