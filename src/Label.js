@@ -6,7 +6,7 @@ import { LABEL_CLASS } from './constants'
 const propTypes = {
   className: PropTypes.string,
   editable: PropTypes.bool,
-  onUpdate: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func,
   currentValue: PropTypes.string,
 }
 
@@ -14,6 +14,7 @@ const defaultProps = {
   currentValue: '',
   editable: true,
   className: LABEL_CLASS,
+  onUpdate: () => {},
 }
 
 
