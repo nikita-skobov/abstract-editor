@@ -179,13 +179,17 @@ describe('AbstractEditor component', () => {
   })
 
   it('should give positionIndex to all KeyValueField children', () => {
-    const outputTemplate = { x: 1, y: 2, deep: {}, other: 'a' }
-    const onUpdate = jest.fn(() => {})
+    const outputTemplate = {
+      x: 1,
+      y: 2,
+      deep: {},
+      other: 'a',
+    }
+
     const wrap = mount(
       <Comp
         renderOutputTemplate
         outputTemplate={outputTemplate}
-        onUpdate={onUpdate}
       >
         <KeyValueField name="x" />
         <KeyValueField name="y" />
@@ -197,7 +201,6 @@ describe('AbstractEditor component', () => {
     )
 
     wrap.find('KeyValueField').forEach((elm) => {
-      console.log(elm.prop('positionIndex'))
       expect(typeof elm.prop('positionIndex')).toBe('number')
     })
   })
