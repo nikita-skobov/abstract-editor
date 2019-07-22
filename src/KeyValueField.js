@@ -151,24 +151,6 @@ export default class KeyValueField extends Component {
       DeleteComponent,
     } = this
 
-    // let tc1
-    // let tc2
-
-    // if (testComponent1) {
-    //   console.log('start: ')
-    //   console.log(testComponent1)
-    //   console.log(testComponent2)
-    //   const TC1 = testComponent1
-    //   const TC2 = testComponent2
-    //   console.log(TC1)
-    //   console.log(TC2)
-    //   tc1 = makeReactObject(TC1)
-    //   tc2 = makeReactObject(TC2)
-    //   console.log(tc1)
-    //   console.log(tc2)
-    // }
-
-
     const kc = React.cloneElement(KeyComponent, {
       className: keyClass,
       currentValue: fieldKey,
