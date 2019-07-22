@@ -2,3 +2,4 @@ export const ABSTRACT_EDITOR_CLASS_PREFIX = 'ae'
 export const LABEL_CLASS = `${ABSTRACT_EDITOR_CLASS_PREFIX}-label`
 export const KEY_VALUE_CLASS = `${ABSTRACT_EDITOR_CLASS_PREFIX}-key-value`
 export const ADD_KEY_VALUE_CLASS = `${ABSTRACT_EDITOR_CLASS_PREFIX}-add-key-value`
+export const DELETE_FIELD_CLASS = `${ABSTRACT_EDITOR_CLASS_PREFIX}-delete-field`
