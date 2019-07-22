@@ -8,7 +8,18 @@ const propTypes = {
   fieldKey: PropTypes.string,
   fieldValue: PropTypes.string,
   className: PropTypes.string,
+  editable: PropTypes.bool,
+
+  keyClass: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.any,
+  ]),
   keyComponent: PropTypes.func,
+
+  valueClass: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.any,
+  ]),
   valueComponent: PropTypes.func,
 
   // eslint-disable-next-line
@@ -16,8 +27,11 @@ const propTypes = {
 }
 
 const defaultProps = {
+  editable: true,
   valueComponent: Label,
+  valueClass: undefined,
   keyComponent: Label,
+  keyClass: undefined,
   className: KEY_VALUE_CLASS,
   fieldType: 'key-value',
   fieldKey: '',
@@ -88,19 +102,30 @@ export default class KeyValueField extends Component {
       fieldKey,
       fieldValue,
     } = this.state
-    const { className, valueComponent, keyComponent } = this.props
+
+    const {
+      className,
+      valueComponent,
+      valueClass,
+      keyComponent,
+      keyClass,
+      editable,
+    } = this.props
 
     const ValueComponent = valueComponent
     const KeyComponent = keyComponent
 
     const kc = (
       <KeyComponent
+        className={keyClass}
         currentValue={fieldKey}
         onUpdate={this.keyChange}
+        editable={editable}
       />
     )
     const vc = (
       <ValueComponent
+        className={valueClass}
         currentValue={fieldValue}
         onUpdate={this.valueChange}
       />

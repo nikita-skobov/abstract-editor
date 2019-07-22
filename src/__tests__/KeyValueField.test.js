@@ -92,4 +92,42 @@ describe('KeyValueField component', () => {
     expect(wrap.find(Label).exists()).not.toBe(true)
     expect(wrap.find(customComponent).exists()).toBe(true)
   })
+
+  it('should allow you to pass classNames for the value and key components', () => {
+    const keyClass = 'kc'
+    const valueClass = 'vc'
+    const customComponent1 = jest.fn(() => <br />)
+    const customComponent2 = jest.fn(() => <br />)
+    mount(
+      <Comp
+        valueComponent={customComponent1}
+        keyComponent={customComponent2}
+        keyClass={keyClass}
+        valueClass={valueClass}
+      />,
+    )
+
+    expect(customComponent1).toHaveBeenCalledWith(expect.objectContaining({
+      className: valueClass,
+    }), expect.anything())
+
+    expect(customComponent2).toHaveBeenCalledWith(expect.objectContaining({
+      className: keyClass,
+    }), expect.anything())
+  })
+
+  it('should pass an editable prop to the key component', () => {
+    const customComponent = jest.fn(() => <br />)
+    const editable = 'dsadsadsa'
+    mount(
+      <Comp
+        keyComponent={customComponent}
+        editable={editable}
+      />,
+    )
+
+    expect(customComponent).toHaveBeenCalledWith(expect.objectContaining({
+      editable,
+    }), expect.anything())
+  })
 })
