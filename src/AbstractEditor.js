@@ -55,11 +55,12 @@ export default class AbstractEditor extends Component {
       stateChildren,
     }
     this.defaultTemplate = { ...props.outputTemplate }
+    this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
   }
 
   keyIsEditable(name) {
-    const outputTemplateKeys = Object.keys(this.defaultTemplate)
-    if (outputTemplateKeys.indexOf(name) === -1) {
+    const { defaultTemplateKeys } = this
+    if (defaultTemplateKeys.indexOf(name) === -1) {
       // this key is NOT included in the template provided
       // so we assume it is a user created key-value, therefore
       // we allow it to be editable
@@ -134,7 +135,7 @@ export default class AbstractEditor extends Component {
           },
         )
       } else if (fieldType === 'key-value') {
-        const { onUpdate: childUpdate } = child.props
+        const { onUpdate: childUpdate, name: childName } = child.props
         if (childUpdate && typeof childUpdate === 'function') {
           // if it already has the function no need to clone
           newElm = child
@@ -144,6 +145,7 @@ export default class AbstractEditor extends Component {
             {
               onUpdate: this.updateKeyValue,
               editable: this.keyIsEditable(name),
+              fieldKey: childName,
             },
           )
         }
