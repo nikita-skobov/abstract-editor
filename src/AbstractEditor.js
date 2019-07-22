@@ -9,35 +9,36 @@ export default class AbstractEditor extends Component {
   constructor(props) {
     super(props)
 
-    const { fieldType, children } = this.props
+    const { fieldType, children, renderOutputTemplate } = this.props
 
     this.addKeyValue = this.addKeyValue.bind(this)
     this.updateKeyValue = this.updateKeyValue.bind(this)
     this.keyIsEditable = this.keyIsEditable.bind(this)
 
+    this.defaultTemplate = { ...props.outputTemplate }
+    this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
 
-    if (fieldType === 'map') {
-      const Temp = props.addKeyValueComponent || AddKeyValueField
-      this.AddKeyValueComp = (
-        <Temp
-          fieldType="add-key-value"
-          onUpdate={this.addKeyValue}
-        />
-      )
-      // override the user provided element (if provided, otherwise use the default),
-      // and use that for future
-      // rendering to avoid overriding during render.
 
-      const Temp2 = props.keyValueComponent || KeyValueField
-      this.KeyValueComp = (
-        <Temp2
-          onUpdate={this.updateKeyValue}
-        />
-      )
-      // override the key value component with either the user
-      // provided prop, or the default
-      // to avoid doing so during render.
-    }
+    const Temp = props.addKeyValueComponent || AddKeyValueField
+    this.AddKeyValueComp = (
+      <Temp
+        fieldType="add-key-value"
+        onUpdate={this.addKeyValue}
+      />
+    )
+    // override the user provided element (if provided, otherwise use the default),
+    // and use that for future
+    // rendering to avoid overriding during render.
+
+    const Temp2 = props.keyValueComponent || KeyValueField
+    this.KeyValueComp = (
+      <Temp2
+        onUpdate={this.updateKeyValue}
+      />
+    )
+    // override the key value component with either the user
+    // provided prop, or the default
+    // to avoid doing so during render.
 
 
     const stateChildren = []
@@ -51,11 +52,48 @@ export default class AbstractEditor extends Component {
       stateChildren.push(children)
     }
 
+    if (renderOutputTemplate) {
+      // loop through children name props.
+      // if the outputTemplate contains keys that
+      // are not present in the children,
+      // add children based on the outputTemplate
+      const outputKeys = Object.keys(props.outputTemplate)
+      stateChildren.forEach((child) => {
+        if (child.props && child.props.name) {
+          const index = outputKeys.indexOf(child.props.name)
+          if (index !== -1) outputKeys.splice(index, 1)
+        }
+      })
+
+      // by this point, the only keys left in outputKeys will be
+      // keys present in the outputTemplate, but were not provided
+      // as renderable children
+      outputKeys.forEach((key) => {
+        const obj = props.outputTemplate[key]
+        if (typeof obj === 'string' || typeof obj === 'number') {
+          // treat it as a standard key-value field
+          const { KeyValueComp } = this
+          const newComp = {
+            ...KeyValueComp,
+            props: {
+              ...KeyValueComp.props,
+              name: key,
+              editable: this.keyIsEditable(key),
+              fieldKey: key,
+            },
+          }
+          stateChildren.push(newComp)
+        } else if (Array.isArray(obj)) {
+          // if an array treat as an array field
+        } else {
+          // treat as a map field
+        }
+      })
+    }
+
     this.state = {
       stateChildren,
     }
-    this.defaultTemplate = { ...props.outputTemplate }
-    this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
   }
 
   keyIsEditable(name) {
