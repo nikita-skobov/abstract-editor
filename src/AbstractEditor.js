@@ -47,10 +47,7 @@ export default class AbstractEditor extends Component {
 
 
     const stateChildren = []
-    if (fieldType === 'map') {
-      const { AddKeyValueComp } = this
-      stateChildren.push(this.fillWithKey(AddKeyValueComp))
-    } else {
+    if (fieldType !== 'map') {
       stateChildren.push(...this.fillComponentsWithKeys(children))
     }
 
@@ -91,6 +88,11 @@ export default class AbstractEditor extends Component {
           // treat as a map field
         }
       })
+    }
+
+    if (fieldType === 'map') {
+      const { AddKeyValueComp } = this
+      stateChildren.push(this.fillWithKey(AddKeyValueComp))
     }
 
     this.state = {
@@ -193,9 +195,6 @@ export default class AbstractEditor extends Component {
     const { stateChildren: children } = this.state
 
     const outputChildren = []
-
-    console.log('children: ')
-    console.log(children)
 
     children.forEach((child, ind) => {
       const { name, fieldType } = child.props
