@@ -14,9 +14,11 @@ export default class AbstractEditor extends Component {
     this.addKeyValue = this.addKeyValue.bind(this)
     this.updateKeyValue = this.updateKeyValue.bind(this)
     this.keyIsEditable = this.keyIsEditable.bind(this)
+    this.removeField = this.removeField.bind(this)
 
     this.defaultTemplate = { ...props.outputTemplate }
     this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
+    this.keyCounter = 0
 
 
     const Temp = props.addKeyValueComponent || AddKeyValueField
@@ -34,6 +36,7 @@ export default class AbstractEditor extends Component {
     this.KeyValueComp = (
       <Temp2
         onUpdate={this.updateKeyValue}
+        onRemove={this.removeField}
       />
     )
     // override the key value component with either the user
@@ -79,6 +82,7 @@ export default class AbstractEditor extends Component {
               ...KeyValueComp.props,
               name: key,
               editable: this.keyIsEditable(key),
+              onRemove: this.keyIsEditable(key) ? this.removeField : (a, f) => { console.log(`should not remove ${f}`) },
               fieldKey: key,
             },
           }
@@ -120,10 +124,39 @@ export default class AbstractEditor extends Component {
       const nextKeyValue = {
         ...this.KeyValueComp,
         props: { ...this.KeyValueComp.props },
+        key: this.keyCounter.toString(),
       }
+
+      this.keyCounter += 1
 
       const newChildren = [...firstNChildren, nextKeyValue, lastChild]
       const newState = { stateChildren: newChildren }
+      return newState
+    })
+  }
+
+  removeField(index, fieldName) {
+    const { defaultTemplate } = this
+    const { onUpdate } = this.props
+
+    if (has.call(defaultTemplate, fieldName)) {
+      delete defaultTemplate[fieldName]
+      onUpdate({ ...defaultTemplate })
+      // in case we modify out current template state
+      // notify our parent that our template
+      // has updated
+    }
+
+    this.setState((prevState) => {
+      const newState = prevState
+      const { stateChildren } = prevState
+      const modifiableChildren = [...stateChildren]
+      modifiableChildren.splice(index, 1)
+      // the component that calls this callback function knows
+      // its positionIndex via a prop. it uses that position index
+      // to let this component know which element to remove
+      // from the state children array.
+      newState.stateChildren = modifiableChildren
       return newState
     })
   }
@@ -149,7 +182,7 @@ export default class AbstractEditor extends Component {
     const outputChildren = []
 
 
-    children.forEach((child) => {
+    children.forEach((child, ind) => {
       const { name, fieldType } = child.props
 
       let newElm
@@ -171,14 +204,22 @@ export default class AbstractEditor extends Component {
         const { onUpdate: childUpdate, name: childName } = child.props
         if (childUpdate && typeof childUpdate === 'function') {
           // if it already has the function no need to clone
-          newElm = child
+          newElm = {
+            ...child,
+            props: {
+              ...child.props,
+              positionIndex: ind,
+            },
+          }
         } else {
           newElm = React.cloneElement(
             child,
             {
               onUpdate: this.updateKeyValue,
+              onRemove: this.keyIsEditable(name) ? this.removeField : (a, f) => {console.log(`should not remove ${f}`)},
               editable: this.keyIsEditable(name),
               fieldKey: childName,
+              positionIndex: ind,
             },
           )
         }
