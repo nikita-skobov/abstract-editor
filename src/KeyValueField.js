@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import Label from './Label'
+import DelteField from './DeleteField'
 import { KEY_VALUE_CLASS } from './constants'
 
 const propTypes = {
@@ -9,6 +10,7 @@ const propTypes = {
   fieldValue: PropTypes.string,
   className: PropTypes.string,
   editable: PropTypes.bool,
+  positionIndex: PropTypes.number.isRequired,
 
   keyClass: PropTypes.oneOfType([
     PropTypes.string,
@@ -22,13 +24,22 @@ const propTypes = {
   ]),
   valueComponent: PropTypes.func,
 
+  deleteComponent: PropTypes.func,
+
+  // eslint-disable-next-line
+  onUpdate: PropTypes.func,
+  onRemove: PropTypes.func,
+
   // eslint-disable-next-line
   fieldType: PropTypes.string,
 }
 
 const defaultProps = {
   editable: true,
+  onUpdate: undefined,
+  onRemove: undefined,
   valueComponent: Label,
+  deleteComponent: DelteField,
   valueClass: undefined,
   keyComponent: Label,
   keyClass: undefined,
@@ -44,6 +55,7 @@ export default class KeyValueField extends Component {
 
     this.keyChange = this.keyChange.bind(this)
     this.valueChange = this.valueChange.bind(this)
+    this.removeField = this.removeField.bind(this)
 
     this.state = {
       fieldKey: props.fieldKey,
@@ -97,6 +109,14 @@ export default class KeyValueField extends Component {
     })
   }
 
+  removeField() {
+    const { onRemove, positionIndex } = this.props
+    const { fieldKey } = this.state
+    if (onRemove && typeof onRemove === 'function') {
+      onRemove(positionIndex, fieldKey)
+    }
+  }
+
   render() {
     const {
       fieldKey,
@@ -108,12 +128,14 @@ export default class KeyValueField extends Component {
       valueComponent,
       valueClass,
       keyComponent,
+      deleteComponent,
       keyClass,
       editable,
     } = this.props
 
     const ValueComponent = valueComponent
     const KeyComponent = keyComponent
+    const DeleteComponent = deleteComponent
 
     const kc = (
       <KeyComponent
@@ -130,12 +152,19 @@ export default class KeyValueField extends Component {
         onUpdate={this.valueChange}
       />
     )
+    const dc = editable ? (
+      <DeleteComponent
+        onClick={this.removeField}
+      />
+    ) : null
+    // dont render the delete component if this field is not editable
 
     return (
       <div className={className}>
         {kc}
         :
         {vc}
+        {dc}
       </div>
     )
   }
