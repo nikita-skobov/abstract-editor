@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import KeyValueField from './KeyValueField'
 import AddKeyValueField from './AddKeyValueField'
 
-const has = Object.prototype.hasOwnProperty
+import { has } from './utils'
 
 export default class AbstractEditor extends Component {
   constructor(props) {
