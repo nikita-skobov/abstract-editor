@@ -22,16 +22,16 @@ describe('Label component', () => {
     expect(wrap2.first().hasClass(override)).toBe(true)
   })
 
-  it('should render a div if not editable', () => {
+  it('should render a span if not editable', () => {
     const wrap = mount(<Comp onUpdate={noop} editable={false} />)
-    expect(wrap.html().substr(0, 4)).toBe('<div')
+    expect(wrap.html().substr(0, 4)).toBe('<spa')
   })
 
-  it('should render the currentValue prop either as input value, or div text', () => {
+  it('should render the currentValue prop either as input value, or span text', () => {
     const currentValue = 'cv'
     const wrap1 = mount(<Comp onUpdate={noop} editable={false} currentValue={currentValue} />)
     const wrap2 = mount(<Comp onUpdate={noop} currentValue={currentValue} />)
-    expect(wrap1.find('div').text()).toBe(currentValue)
+    expect(wrap1.find('span').text()).toBe(currentValue)
     expect(wrap2.find('input').instance().value).toBe(currentValue)
   })
 

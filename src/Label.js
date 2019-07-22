@@ -37,9 +37,9 @@ export default function Label(props) {
   }
 
   return (
-    <div className={className}>
+    <span className={className}>
       {currentValue}
-    </div>
+    </span>
   )
 }
 
