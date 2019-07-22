@@ -1,21 +1,45 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const defaultProps = {
+import { LABEL_CLASS } from './constants'
 
-}
 const propTypes = {
+  className: PropTypes.string,
+  editable: PropTypes.bool,
+  onUpdate: PropTypes.func.isRequired,
+  currentValue: PropTypes.string,
+}
 
+const defaultProps = {
+  currentValue: '',
+  editable: true,
+  className: LABEL_CLASS,
 }
 
 
 export default function Label(props) {
+  const {
+    className,
+    onUpdate,
+    currentValue,
+    editable,
+  } = props
+
+  if (editable) {
+    return (
+      <input
+        className={className}
+        type="text"
+        defaultValue={currentValue}
+        onChange={onUpdate}
+      />
+    )
+  }
+
   return (
-    <input
-      type="text"
-      defaultValue={props.currentValue}
-      onChange={props.onUpdate}
-    />
+    <div className={className}>
+      {currentValue}
+    </div>
   )
 }
 
