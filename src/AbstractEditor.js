@@ -1,9 +1,26 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import KeyValueField from './KeyValueField'
 import AddKeyValueField from './AddKeyValueField'
 
-import { has } from './utils'
+import { has, makeReactObject } from './utils'
+
+const propTypes = {
+  addKeyValueComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+  ]),
+
+  keyValueComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+  ]),
+}
+const defaultProps = {
+  addKeyValueComponent: AddKeyValueField,
+  keyValueComponent: KeyValueField,
+}
 
 export default class AbstractEditor extends Component {
   constructor(props) {
@@ -21,27 +38,10 @@ export default class AbstractEditor extends Component {
     this.keyCounter = 0
 
 
-    const Temp = props.addKeyValueComponent || AddKeyValueField
-    this.AddKeyValueComp = (
-      <Temp
-        fieldType="add-key-value"
-        onUpdate={this.addKeyValue}
-      />
-    )
-    // override the user provided element (if provided, otherwise use the default),
-    // and use that for future
-    // rendering to avoid overriding during render.
-
-    const Temp2 = props.keyValueComponent || KeyValueField
-    this.KeyValueComp = (
-      <Temp2
-        onUpdate={this.updateKeyValue}
-        onRemove={this.removeField}
-      />
-    )
-    // override the key value component with either the user
-    // provided prop, or the default
-    // to avoid doing so during render.
+    this.AddKeyValueComp = makeReactObject(props.addKeyValueComponent, {
+      fieldType: 'add-key-value',
+    })
+    this.KeyValueComp = makeReactObject(props.keyValueComponent)
 
 
     const stateChildren = []
@@ -76,16 +76,13 @@ export default class AbstractEditor extends Component {
         if (typeof obj === 'string' || typeof obj === 'number') {
           // treat it as a standard key-value field
           const { KeyValueComp } = this
-          const newComp = {
-            ...KeyValueComp,
-            props: {
-              ...KeyValueComp.props,
-              name: key,
-              editable: this.keyIsEditable(key),
-              onRemove: this.keyIsEditable(key) ? this.removeField : (a, f) => { console.log(`should not remove ${f}`) },
-              fieldKey: key,
-            },
-          }
+          const isEditable = this.keyIsEditable(key)
+          const newComp = React.cloneElement(KeyValueComp, {
+            name: key,
+            editable: isEditable,
+            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            fieldKey: key,
+          })
           stateChildren.push(newComp)
         } else if (Array.isArray(obj)) {
           // if an array treat as an array field
@@ -121,12 +118,9 @@ export default class AbstractEditor extends Component {
       const lastChild = stateChildren[stateChildren.length - 1]
       const firstNChildren = stateChildren.slice(0, stateChildren.length - 1)
 
-      const nextKeyValue = {
-        ...this.KeyValueComp,
-        props: { ...this.KeyValueComp.props },
+      const nextKeyValue = React.cloneElement(this.KeyValueComp, {
         key: this.keyCounter.toString(),
-      }
-
+      })
       this.keyCounter += 1
 
       const newChildren = [...firstNChildren, nextKeyValue, lastChild]
@@ -187,7 +181,12 @@ export default class AbstractEditor extends Component {
 
       let newElm
       if (fieldType === 'add-key-value') {
-        newElm = child
+        newElm = React.cloneElement(
+          child,
+          {
+            onUpdate: this.addKeyValue,
+          },
+        )
       } else if (fieldType === 'map') {
         newElm = React.cloneElement(
           child,
@@ -201,28 +200,17 @@ export default class AbstractEditor extends Component {
           },
         )
       } else if (fieldType === 'key-value') {
-        const { onUpdate: childUpdate, name: childName } = child.props
-        if (childUpdate && typeof childUpdate === 'function') {
-          // if it already has the function no need to clone
-          newElm = {
-            ...child,
-            props: {
-              ...child.props,
-              positionIndex: ind,
-            },
-          }
-        } else {
-          newElm = React.cloneElement(
-            child,
-            {
-              onUpdate: this.updateKeyValue,
-              onRemove: this.keyIsEditable(name) ? this.removeField : (a, f) => {console.log(`should not remove ${f}`)},
-              editable: this.keyIsEditable(name),
-              fieldKey: childName,
-              positionIndex: ind,
-            },
-          )
-        }
+        const { name: childName } = child.props
+        newElm = React.cloneElement(
+          child,
+          {
+            onUpdate: this.updateKeyValue,
+            onRemove: this.keyIsEditable(name) ? this.removeField : (a, f) => {console.log(`should not remove ${f}`)},
+            editable: this.keyIsEditable(name),
+            fieldKey: childName,
+            positionIndex: ind,
+          },
+        )
       } else {
         newElm = React.cloneElement(
           child,
@@ -246,3 +234,7 @@ export default class AbstractEditor extends Component {
     return outputChildren
   }
 }
+
+
+AbstractEditor.propTypes = propTypes
+AbstractEditor.defaultProps = defaultProps
