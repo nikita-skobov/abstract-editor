@@ -1,7 +1,7 @@
 /* global describe it expect jest */
 // eslint-disable-next-line
 import React from 'react'
-import { mount } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import Comp from '../KeyValueField'
 import Label from '../Label'
 
@@ -9,15 +9,15 @@ import { KEY_VALUE_CLASS as COMP_CLASS } from '../constants'
 
 describe('KeyValueField component', () => {
   it('should render', () => {
-    const wrap = mount(<Comp />)
+    const wrap = shallow(<Comp />)
     expect(wrap.find('div').exists()).toBe(true)
   })
 
-  it('should have two input elements by default', () => {
-    const wrap = mount(<Comp />)
-    const inputs = wrap.find('input')
-    expect(inputs.exists()).toBe(true)
-    expect(inputs).toHaveLength(2)
+  it('should have two Label elements by default', () => {
+    const wrap = shallow(<Comp />)
+    const labels = wrap.find('Label')
+    expect(labels.exists()).toBe(true)
+    expect(labels).toHaveLength(2)
   })
 
   it('should render the inputs with key, value default values respectively', () => {
@@ -73,8 +73,8 @@ describe('KeyValueField component', () => {
 
   it(`should allow the user to override the className (default should be ${COMP_CLASS})`, () => {
     const override = 'my-custom-class'
-    const wrap1 = mount(<Comp />)
-    const wrap2 = mount(<Comp className={override} />)
+    const wrap1 = shallow(<Comp />)
+    const wrap2 = shallow(<Comp className={override} />)
     const firstDiv1 = wrap1.find('div').first()
     const firstDiv2 = wrap2.find('div').first()
     expect(firstDiv1.hasClass(COMP_CLASS)).toBe(true)
@@ -82,13 +82,13 @@ describe('KeyValueField component', () => {
   })
 
   it('should use Label as the default value component', () => {
-    const wrap = mount(<Comp />)
+    const wrap = shallow(<Comp />)
     expect(wrap.find(Label).exists()).toBe(true)
   })
 
   it('should allow you to override the default value and key components', () => {
     const customComponent = () => <br />
-    const wrap = mount(<Comp valueComponent={customComponent} keyComponent={customComponent} />)
+    const wrap = shallow(<Comp valueComponent={customComponent} keyComponent={customComponent} />)
     expect(wrap.find(Label).exists()).not.toBe(true)
     expect(wrap.find(customComponent).exists()).toBe(true)
   })

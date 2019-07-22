@@ -1,21 +1,21 @@
 /* global describe it expect jest */
 // eslint-disable-next-line
 import React from 'react'
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 import Comp from '../Label'
 
 import { LABEL_CLASS as COMP_CLASS } from '../constants'
 
 describe('Label component', () => {
   it('should render', () => {
-    const wrap = mount(<Comp />)
+    const wrap = shallow(<Comp />)
     expect(wrap.find('input').exists()).toBe(true)
   })
 
   it(`should allow the user to override the className (default should be ${COMP_CLASS})`, () => {
     const override = 'my-custom-class'
-    const wrap1 = mount(<Comp />)
-    const wrap2 = mount(<Comp className={override} />)
+    const wrap1 = shallow(<Comp />)
+    const wrap2 = shallow(<Comp className={override} />)
     expect(wrap1.first().hasClass(COMP_CLASS)).toBe(true)
     expect(wrap2.first().hasClass(override)).toBe(true)
   })
@@ -27,9 +27,9 @@ describe('Label component', () => {
 
   it('should render the currentValue prop either as input value, or span text', () => {
     const currentValue = 'cv'
-    const wrap1 = mount(<Comp editable={false} currentValue={currentValue} />)
-    const wrap2 = mount(<Comp currentValue={currentValue} />)
+    const wrap1 = shallow(<Comp editable={false} currentValue={currentValue} />)
+    const wrap2 = shallow(<Comp currentValue={currentValue} />)
     expect(wrap1.find('span').text()).toBe(currentValue)
-    expect(wrap2.find('input').instance().value).toBe(currentValue)
+    expect(wrap2.find('input').prop('defaultValue')).toBe(currentValue)
   })
 })
