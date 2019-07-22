@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { makeReactObject } from './utils'
 import Label from './Label'
 import DelteField from './DeleteField'
 import { KEY_VALUE_CLASS } from './constants'
@@ -16,15 +17,25 @@ const propTypes = {
     PropTypes.string,
     PropTypes.any,
   ]),
-  keyComponent: PropTypes.func,
+  keyComponent: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.func,
+  ]),
+
 
   valueClass: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.any,
   ]),
-  valueComponent: PropTypes.func,
+  valueComponent: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.func,
+  ]),
 
-  deleteComponent: PropTypes.func,
+  deleteComponent: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.func,
+  ]),
 
   // eslint-disable-next-line
   onUpdate: PropTypes.func,
@@ -61,6 +72,10 @@ export default class KeyValueField extends Component {
       fieldKey: props.fieldKey,
       fieldValue: props.fieldValue,
     }
+
+    this.ValueComponent = makeReactObject(props.valueComponent)
+    this.KeyComponent = makeReactObject(props.keyComponent)
+    this.DeleteComponent = makeReactObject(props.deleteComponent)
   }
 
   keyChange({ target }) {
@@ -125,38 +140,53 @@ export default class KeyValueField extends Component {
 
     const {
       className,
-      valueComponent,
       valueClass,
-      keyComponent,
-      deleteComponent,
       keyClass,
       editable,
     } = this.props
 
-    const ValueComponent = valueComponent
-    const KeyComponent = keyComponent
-    const DeleteComponent = deleteComponent
+    const {
+      ValueComponent,
+      KeyComponent,
+      DeleteComponent,
+    } = this
 
-    const kc = (
-      <KeyComponent
-        className={keyClass}
-        currentValue={fieldKey}
-        onUpdate={this.keyChange}
-        editable={editable}
-      />
-    )
-    const vc = (
-      <ValueComponent
-        className={valueClass}
-        currentValue={fieldValue}
-        onUpdate={this.valueChange}
-      />
-    )
-    const dc = editable ? (
-      <DeleteComponent
-        onClick={this.removeField}
-      />
-    ) : null
+    // let tc1
+    // let tc2
+
+    // if (testComponent1) {
+    //   console.log('start: ')
+    //   console.log(testComponent1)
+    //   console.log(testComponent2)
+    //   const TC1 = testComponent1
+    //   const TC2 = testComponent2
+    //   console.log(TC1)
+    //   console.log(TC2)
+    //   tc1 = makeReactObject(TC1)
+    //   tc2 = makeReactObject(TC2)
+    //   console.log(tc1)
+    //   console.log(tc2)
+    // }
+
+
+    const kc = React.cloneElement(KeyComponent, {
+      className: keyClass,
+      currentValue: fieldKey,
+      onUpdate: this.keyChange,
+      editable,
+    })
+
+    const vc = React.cloneElement(ValueComponent, {
+      className: valueClass,
+      currentValue: fieldValue,
+      onUpdate: this.valueChange,
+    })
+
+    const dc = editable
+      ? React.cloneElement(DeleteComponent, {
+        onClick: this.removeField,
+      })
+      : null
     // dont render the delete component if this field is not editable
 
     return (
