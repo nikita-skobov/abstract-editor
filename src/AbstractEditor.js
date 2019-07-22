@@ -44,6 +44,7 @@ export default class AbstractEditor extends Component {
 
     this.defaultTemplate = { ...props.outputTemplate }
     this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
+    this.ownerKeyMap = {}
     this.keyCounter = 0
 
 
@@ -194,13 +195,29 @@ export default class AbstractEditor extends Component {
     })
   }
 
-  updateKeyValue(newKey, newValue, oldKey) {
+  updateKeyValue(newKey, newValue, oldKey, positionIndex) {
+    const { stateChildren } = this.state
+    const { key: iAm } = stateChildren[positionIndex]
+    // console.log(`I AM ${iAm}`)
+    const oldKeyOwner = this.ownerKeyMap[oldKey]
+    const newKeyOwner = this.ownerKeyMap[newKey]
+    const allowedToSetNewKey = newKeyOwner === undefined || newKeyOwner === iAm
     if (oldKey !== newKey) {
-      if (has.call(this.defaultTemplate, oldKey)) {
+      // console.log(`old key: ${oldKey} was owned by ${oldKeyOwner}`)
+      // console.log(`new key: ${newKey} was owned by ${newKeyOwner}`)
+      const allowedToDeleteOldKey = oldKeyOwner === undefined || oldKeyOwner === iAm
+      if (has.call(this.defaultTemplate, oldKey) && allowedToDeleteOldKey) {
+        // console.log('I am allowed to delete the old key')
         delete this.defaultTemplate[oldKey]
+        this.ownerKeyMap[oldKey] = undefined
       }
     }
-    this.defaultTemplate[newKey] = newValue
+
+    if (allowedToSetNewKey) {
+      // console.log('I am allowed to set to the new key')
+      this.defaultTemplate[newKey] = newValue
+      this.ownerKeyMap[newKey] = iAm
+    }
 
     const { onUpdate } = this.props
     if (onUpdate && typeof onUpdate === 'function') {

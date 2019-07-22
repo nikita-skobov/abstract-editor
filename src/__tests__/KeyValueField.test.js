@@ -31,11 +31,18 @@ describe('KeyValueField component', () => {
     expect(valInput.props.defaultValue).toBe(valueDefault)
   })
 
-  it('should callback both the key and the value upon change', () => {
+  it('should callback both the key and the value and the positionIndex upon change', () => {
     const onUpdate = jest.fn(() => {})
     const keyDefault = 'kd'
     const valueDefault = 'vd'
-    const wrap = mount(<Comp fieldKey={keyDefault} fieldValue={valueDefault} onUpdate={onUpdate} />)
+    const wrap = mount(
+      <Comp
+        positionIndex={33}
+        fieldKey={keyDefault}
+        fieldValue={valueDefault}
+        onUpdate={onUpdate}
+      />,
+    )
     const inputs = wrap.find('input')
     const keyInput = inputs.at(0)
     const valInput = inputs.at(1)
@@ -45,10 +52,10 @@ describe('KeyValueField component', () => {
     const newKey = 'newkey'
     const newValue = 'newvalue'
     keyInput.simulate('change', { target: { value: newKey } })
-    expect(onUpdate).toHaveBeenCalledWith(newKey, currentValue, currentKey)
+    expect(onUpdate).toHaveBeenCalledWith(newKey, currentValue, currentKey, 33)
 
     valInput.simulate('change', { target: { value: newValue } })
-    expect(onUpdate).toHaveBeenCalledWith(newKey, newValue, newKey)
+    expect(onUpdate).toHaveBeenCalledWith(newKey, newValue, newKey, 33)
   })
 
   it('should allow you to override the value component', () => {

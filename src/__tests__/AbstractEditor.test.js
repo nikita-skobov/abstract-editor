@@ -88,7 +88,9 @@ describe('AbstractEditor component', () => {
 
     const { updateKeyValue } = wrap.instance()
     // updateKeyValue(newKey, newValue, oldKey)
-    updateKeyValue('x', '100', 'x')
+    updateKeyValue('x', '100', 'x', 0)
+    // x is the first key in the outputTemplate
+    // so it has a positionIndex of 0
     expect(onUpdate).toHaveBeenCalled()
   })
 
@@ -168,7 +170,9 @@ describe('AbstractEditor component', () => {
     const deepValueField = wrap.findWhere(n => n.prop('name') === 'deep')
     const valueComponent = deepValueField.findWhere(n => n.prop('fieldType') === 'map')
     const { updateKeyValue } = valueComponent.instance()
-    updateKeyValue('defaultValue', 'abc', 'defaultValue')
+    updateKeyValue('defaultValue', 'abc', 'defaultValue', 0)
+    // 0 is the positionIndex of defaultValue within deep
+    // (since defaultValue is the first, and only key in deep it has positionIndex of 0)
     expect(onUpdate).toHaveBeenCalledWith({
       x: 1,
       y: 2,

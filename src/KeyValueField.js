@@ -89,8 +89,8 @@ export default class KeyValueField extends Component {
         fieldKey: value,
         fieldValue: prevState.fieldValue,
       }
-      const { onUpdate } = props
-      onUpdate(value, prevState.fieldValue, prevState.fieldKey)
+      const { onUpdate, positionIndex } = props
+      onUpdate(value, prevState.fieldValue, prevState.fieldKey, positionIndex)
 
       return newState
     })
@@ -117,8 +117,8 @@ export default class KeyValueField extends Component {
         fieldKey: prevState.fieldKey,
         fieldValue: newValue,
       }
-      const { onUpdate } = props
-      onUpdate(prevState.fieldKey, newValue, prevState.fieldKey)
+      const { onUpdate, positionIndex } = props
+      onUpdate(prevState.fieldKey, newValue, prevState.fieldKey, positionIndex)
 
       return newState
     })
