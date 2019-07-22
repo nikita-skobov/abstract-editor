@@ -40,9 +40,7 @@ export default class AbstractEditor extends Component {
     this.keyCounter = 0
 
 
-    this.AddKeyValueComp = makeReactObject(props.addKeyValueComponent, {
-      fieldType: 'add-key-value',
-    })
+    this.AddKeyValueComp = makeReactObject(props.addKeyValueComponent)
     this.KeyValueComp = makeReactObject(props.keyValueComponent)
 
 

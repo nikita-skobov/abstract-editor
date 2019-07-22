@@ -7,8 +7,12 @@ const propTypes = {
   className: PropTypes.string,
   onUpdate: PropTypes.func,
   displayName: PropTypes.string,
+
+  // eslint-disable-next-line
+  fieldType: PropTypes.string,
 }
 const defaultProps = {
+  fieldType: 'add-key-value',
   className: ADD_KEY_VALUE_CLASS,
   onUpdate: () => {},
   displayName: '+',
