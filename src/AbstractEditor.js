@@ -13,6 +13,7 @@ export default class AbstractEditor extends Component {
 
     this.addKeyValue = this.addKeyValue.bind(this)
     this.updateKeyValue = this.updateKeyValue.bind(this)
+    this.keyIsEditable = this.keyIsEditable.bind(this)
 
 
     if (fieldType === 'map') {
@@ -54,6 +55,21 @@ export default class AbstractEditor extends Component {
       stateChildren,
     }
     this.defaultTemplate = { ...props.outputTemplate }
+  }
+
+  keyIsEditable(name) {
+    const outputTemplateKeys = Object.keys(this.defaultTemplate)
+    if (outputTemplateKeys.indexOf(name) === -1) {
+      // this key is NOT included in the template provided
+      // so we assume it is a user created key-value, therefore
+      // we allow it to be editable
+      return true
+    }
+
+    // otherwise if the template DOES HAVE that key,
+    // then we do not want the user to alter this key name,
+    // otherwise they would be altering the outputTemplate
+    return false
   }
 
   addKeyValue() {
@@ -127,6 +143,7 @@ export default class AbstractEditor extends Component {
             child,
             {
               onUpdate: this.updateKeyValue,
+              editable: this.keyIsEditable(name),
             },
           )
         }
