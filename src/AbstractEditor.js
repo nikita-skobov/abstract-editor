@@ -32,6 +32,8 @@ export default class AbstractEditor extends Component {
     this.updateKeyValue = this.updateKeyValue.bind(this)
     this.keyIsEditable = this.keyIsEditable.bind(this)
     this.removeField = this.removeField.bind(this)
+    this.fillWithKey = this.fillWithKey.bind(this)
+    this.fillComponentsWithKeys = this.fillComponentsWithKeys.bind(this)
 
     this.defaultTemplate = { ...props.outputTemplate }
     this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
@@ -47,12 +49,9 @@ export default class AbstractEditor extends Component {
     const stateChildren = []
     if (fieldType === 'map') {
       const { AddKeyValueComp } = this
-      stateChildren.push(AddKeyValueComp)
-    } else if (Array.isArray(children)) {
-      stateChildren.push(...children)
+      stateChildren.push(this.fillWithKey(AddKeyValueComp))
     } else {
-      // single child, but treat it as an array
-      stateChildren.push(children)
+      stateChildren.push(...this.fillComponentsWithKeys(children))
     }
 
     if (renderOutputTemplate) {
@@ -82,7 +81,9 @@ export default class AbstractEditor extends Component {
             editable: isEditable,
             onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
             fieldKey: key,
+            key: this.keyCounter.toString(),
           })
+          this.keyCounter += 1
           stateChildren.push(newComp)
         } else if (Array.isArray(obj)) {
           // if an array treat as an array field
@@ -95,6 +96,27 @@ export default class AbstractEditor extends Component {
     this.state = {
       stateChildren,
     }
+  }
+
+  fillWithKey(comp) {
+    const newComp = React.cloneElement(comp, {
+      key: this.keyCounter.toString(),
+    })
+    this.keyCounter += 1
+    return newComp
+  }
+
+  fillComponentsWithKeys(components) {
+    const newComponents = []
+    if (Array.isArray(components)) {
+      components.forEach((comp) => {
+        newComponents.push(this.fillWithKey(comp))
+      })
+    } else {
+      newComponents.push(this.fillWithKey(components))
+    }
+
+    return newComponents
   }
 
   keyIsEditable(name) {
@@ -118,10 +140,7 @@ export default class AbstractEditor extends Component {
       const lastChild = stateChildren[stateChildren.length - 1]
       const firstNChildren = stateChildren.slice(0, stateChildren.length - 1)
 
-      const nextKeyValue = React.cloneElement(this.KeyValueComp, {
-        key: this.keyCounter.toString(),
-      })
-      this.keyCounter += 1
+      const nextKeyValue = this.fillWithKey(this.KeyValueComp)
 
       const newChildren = [...firstNChildren, nextKeyValue, lastChild]
       const newState = { stateChildren: newChildren }
@@ -175,6 +194,8 @@ export default class AbstractEditor extends Component {
 
     const outputChildren = []
 
+    console.log('children: ')
+    console.log(children)
 
     children.forEach((child, ind) => {
       const { name, fieldType } = child.props
