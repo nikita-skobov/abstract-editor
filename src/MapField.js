@@ -13,9 +13,10 @@ const defaultProps = {
 export default function MapField(props) {
   const {
     fieldType,
+    onUpdate,
   } = props
 
-  return <AbstractEditor fieldType={fieldType} />
+  return <AbstractEditor fieldType={fieldType} onUpdate={onUpdate} />
 }
 
 MapField.propTypes = propTypes

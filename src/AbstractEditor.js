@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import KeyValueField from './KeyValueField'
 import AddKeyValueField from './AddKeyValueField'
+import MapField from './MapField'
 
 import { has, makeReactObject } from './utils'
 
@@ -16,10 +17,16 @@ const propTypes = {
     PropTypes.func,
     PropTypes.element,
   ]),
+
+  mapFieldComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+  ]),
 }
 export const defaultProps = {
   addKeyValueComponent: AddKeyValueField,
   keyValueComponent: KeyValueField,
+  mapFieldComponent: MapField,
 }
 
 export default class AbstractEditor extends Component {
@@ -42,6 +49,7 @@ export default class AbstractEditor extends Component {
 
     this.AddKeyValueComp = makeReactObject(props.addKeyValueComponent)
     this.KeyValueComp = makeReactObject(props.keyValueComponent)
+    this.MapFieldComp = makeReactObject(props.mapFieldComponent)
 
 
     const stateChildren = []
@@ -84,8 +92,6 @@ export default class AbstractEditor extends Component {
           // if an array treat as an array field
         } else {
           // treat as a map field
-
-          // TODO: implement treating it as a map field...
           const { KeyValueComp } = this
           const isEditable = this.keyIsEditable(key)
           const newComp = React.cloneElement(KeyValueComp, {
@@ -94,6 +100,7 @@ export default class AbstractEditor extends Component {
             onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
             fieldKey: key,
             key: this.keyCounter.toString(),
+            valueComponent: this.MapFieldComp,
           })
           this.keyCounter += 1
           stateChildren.push(newComp)
