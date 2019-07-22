@@ -17,7 +17,7 @@ const propTypes = {
     PropTypes.element,
   ]),
 }
-const defaultProps = {
+export const defaultProps = {
   addKeyValueComponent: AddKeyValueField,
   keyValueComponent: KeyValueField,
 }
@@ -84,6 +84,19 @@ export default class AbstractEditor extends Component {
           // if an array treat as an array field
         } else {
           // treat as a map field
+
+          // TODO: implement treating it as a map field...
+          const { KeyValueComp } = this
+          const isEditable = this.keyIsEditable(key)
+          const newComp = React.cloneElement(KeyValueComp, {
+            name: key,
+            editable: isEditable,
+            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            fieldKey: key,
+            key: this.keyCounter.toString(),
+          })
+          this.keyCounter += 1
+          stateChildren.push(newComp)
         }
       })
     }
@@ -112,7 +125,7 @@ export default class AbstractEditor extends Component {
       components.forEach((comp) => {
         newComponents.push(this.fillWithKey(comp))
       })
-    } else {
+    } else if (components) {
       newComponents.push(this.fillWithKey(components))
     }
 
