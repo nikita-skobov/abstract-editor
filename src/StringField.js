@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function StringField(props) {
+export default function AbstractField(props) {
   const {
     onUpdate,
     showField,
@@ -11,6 +11,7 @@ export default function StringField(props) {
 
   const showName = showField && (displayName || name)
 
+  // otherwise assume it is a string input
   return (
     <div>
       <span>{showField && showName}</span>
