@@ -7,12 +7,6 @@ import DeleteField from './DeleteField'
 import { makeReactObject } from './utils'
 
 const propTypes = {
-  startingList: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.any),
-    PropTypes.object,
-  ])),
-
   onUpdate: PropTypes.func,
 
   valueComponent: PropTypes.oneOfType([
@@ -32,10 +26,9 @@ const propTypes = {
   // eslint-disable-next-line
   startingItem: PropTypes.any,
 }
-const defaultStartingItem = ''
+
 const defaultProps = {
-  startingItem: defaultStartingItem,
-  startingList: [defaultStartingItem],
+  startingItem: '',
   deletePosition: 'right',
   onUpdate: () => {},
   valueComponent: ListItem,
@@ -55,9 +48,9 @@ export default class ListField extends Component {
     this.itemDeleted = this.itemDeleted.bind(this)
 
     const {
-      startingList,
       valueComponent,
       addItemComponent,
+      startingItem,
       deleteItemComponent,
     } = props
     this.ValueComponent = makeReactObject(valueComponent)
@@ -66,6 +59,7 @@ export default class ListField extends Component {
 
     const list = []
 
+    const startingList = [startingItem]
     startingList.forEach((elm) => {
       this.outputList.push(elm)
       list.push(this.fillWithKey(this.ValueComponent, {
@@ -134,8 +128,8 @@ export default class ListField extends Component {
       const nextChild = this.fillWithKey(this.ValueComponent, {
         outputTemplate: startingItem,
       })
-      this.outputList.push(startingItem)
 
+      this.outputList.push(startingItem)
       const newChildren = [...firstNChildren, nextChild, lastChild]
       const newState = { list: newChildren }
       return newState
@@ -145,6 +139,7 @@ export default class ListField extends Component {
   render() {
     const { list } = this.state
     const { deletePosition } = this.props
+
 
     const output = []
     list.forEach((item, ind) => {
