@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import KeyValueField from './KeyValueField'
 import AddKeyValueField from './AddKeyValueField'
 import MapField from './MapField'
+import ListField from './ListField'
 
 import { has, makeReactObject } from './utils'
 
@@ -22,11 +23,17 @@ const propTypes = {
     PropTypes.func,
     PropTypes.element,
   ]),
+
+  listFieldComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+  ]),
 }
 export const defaultProps = {
   addKeyValueComponent: AddKeyValueField,
   keyValueComponent: KeyValueField,
   mapFieldComponent: MapField,
+  listFieldComponent: ListField,
 }
 
 export default class AbstractEditor extends Component {
@@ -51,6 +58,7 @@ export default class AbstractEditor extends Component {
     this.AddKeyValueComp = makeReactObject(props.addKeyValueComponent)
     this.KeyValueComp = makeReactObject(props.keyValueComponent)
     this.MapFieldComp = makeReactObject(props.mapFieldComponent)
+    this.ListFieldComp = makeReactObject(props.listFieldComponent)
 
 
     const stateChildren = []
@@ -91,6 +99,18 @@ export default class AbstractEditor extends Component {
           stateChildren.push(newComp)
         } else if (Array.isArray(obj)) {
           // if an array treat as an array field
+          const { KeyValueComp } = this
+          const isEditable = this.keyIsEditable(key)
+          const newComp = React.cloneElement(KeyValueComp, {
+            name: key,
+            editable: isEditable,
+            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            fieldKey: key,
+            key: this.keyCounter.toString(),
+            valueComponent: this.ListFieldComp,
+          })
+          this.keyCounter += 1
+          stateChildren.push(newComp)
         } else {
           // treat as a map field
           const { KeyValueComp } = this
