@@ -2,17 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Label from './Label'
-import DeleteField from './DeleteField'
 
 const propTypes = {
-  defaultValue: PropTypes.string,
+  outputTemplate: PropTypes.string,
   onUpdate: PropTypes.func,
-  onDelete: PropTypes.func,
   positionIndex: PropTypes.number.isRequired,
 }
 const defaultProps = {
-  defaultValue: '',
-  onDelete: () => {},
+  outputTemplate: '',
   onUpdate: () => {},
 }
 
@@ -20,8 +17,7 @@ export default function ListItem(props) {
   const {
     onUpdate: outerUpdate,
     positionIndex,
-    defaultValue,
-    onDelete,
+    outputTemplate,
   } = props
 
   const innerUpdate = (e) => {
@@ -30,14 +26,9 @@ export default function ListItem(props) {
     outerUpdate(value, positionIndex)
   }
 
-  const innerDelete = () => {
-    onDelete(positionIndex)
-  }
-
   return (
     <div>
-      <Label onUpdate={innerUpdate} defaultValue={defaultValue} />
-      <DeleteField onClick={innerDelete} />
+      <Label onUpdate={innerUpdate} defaultValue={outputTemplate} />
     </div>
   )
 }

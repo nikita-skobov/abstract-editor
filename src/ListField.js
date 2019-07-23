@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import ListItem from './ListItem'
 import AddListItem from './AddKeyValueField'
+import DeleteField from './DeleteField'
 import { makeReactObject } from './utils'
 
 const propTypes = {
@@ -22,12 +23,22 @@ const propTypes = {
     PropTypes.func,
     PropTypes.element,
   ]),
+  deleteItemComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+  ]),
+
+  // eslint-disable-next-line
+  startingItem: PropTypes.any,
 }
+const defaultStartingItem = ''
 const defaultProps = {
-  startingList: [''],
+  startingItem: defaultStartingItem,
+  startingList: [defaultStartingItem],
   onUpdate: () => {},
   valueComponent: ListItem,
   addItemComponent: AddListItem,
+  deleteItemComponent: DeleteField,
 }
 
 export default class ListField extends Component {
@@ -41,18 +52,22 @@ export default class ListField extends Component {
     this.itemUpdated = this.itemUpdated.bind(this)
     this.itemDeleted = this.itemDeleted.bind(this)
 
-    const { startingList, valueComponent, addItemComponent } = props
+    const {
+      startingList,
+      valueComponent,
+      addItemComponent,
+      deleteItemComponent,
+    } = props
     this.ValueComponent = makeReactObject(valueComponent)
     this.AddItemComponent = makeReactObject(addItemComponent)
+    this.DeleteItemComponent = makeReactObject(deleteItemComponent)
 
     const list = []
 
     startingList.forEach((elm) => {
       this.outputList.push(elm)
       list.push(this.fillWithKey(this.ValueComponent, {
-        defaultValue: elm,
-        onUpdate: this.itemUpdated,
-        onDelete: this.itemDeleted,
+        outputTemplate: elm,
       }))
     })
 
@@ -107,17 +122,17 @@ export default class ListField extends Component {
   }
 
   addItemFunc() {
+    const { startingItem } = this.props
+
     this.setState((prevState) => {
       const { list } = prevState
       const lastChild = list[list.length - 1]
       const firstNChildren = list.slice(0, list.length - 1)
 
       const nextChild = this.fillWithKey(this.ValueComponent, {
-        defaultValue: '',
-        onUpdate: this.itemUpdated,
-        onDelete: this.itemDeleted,
+        outputTemplate: startingItem,
       })
-      this.outputList.push('')
+      this.outputList.push(startingItem)
 
       const newChildren = [...firstNChildren, nextChild, lastChild]
       const newState = { list: newChildren }
@@ -136,6 +151,11 @@ export default class ListField extends Component {
       } else {
         output.push(React.cloneElement(item, {
           positionIndex: ind,
+          onUpdate: (nv) => { this.itemUpdated(nv, ind) },
+        }))
+        output.push(React.cloneElement(this.DeleteItemComponent, {
+          onClick: () => { this.itemDeleted(ind) },
+          key: `${item.key}-delete`,
         }))
       }
     })
