@@ -137,4 +137,28 @@ describe('KeyValueField component', () => {
       editable,
     }), expect.anything())
   })
+
+  it('should have an option to render the deleteComponent on the left (default should be right)', () => {
+    const wrapRight = shallow(
+      <Comp />,
+    )
+    const wrapLeft = shallow(
+      <Comp
+        deletePosition="left"
+      />,
+    )
+
+    let rightIndex = -1
+    let leftIndex = -1
+
+    wrapRight.find('div').children().forEach((child, ind) => {
+      if (child.name() === 'DeleteField') rightIndex = ind
+    })
+    wrapLeft.find('div').children().forEach((child, ind) => {
+      if (child.name() === 'DeleteField') leftIndex = ind
+    })
+
+    expect(rightIndex).toBe(3)
+    expect(leftIndex).toBe(0)
+  })
 })

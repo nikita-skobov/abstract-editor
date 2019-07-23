@@ -11,7 +11,8 @@ const propTypes = {
   fieldValue: PropTypes.string,
   className: PropTypes.string,
   editable: PropTypes.bool,
-  positionIndex: PropTypes.number.isRequired,
+  positionIndex: PropTypes.number,
+  deletePosition: PropTypes.oneOf(['left', 'right']),
 
   keyClass: PropTypes.oneOfType([
     PropTypes.string,
@@ -46,6 +47,8 @@ const propTypes = {
 }
 
 const defaultProps = {
+  deletePosition: 'right',
+  positionIndex: -1,
   editable: true,
   onUpdate: undefined,
   onRemove: undefined,
@@ -143,6 +146,7 @@ export default class KeyValueField extends Component {
       valueClass,
       keyClass,
       editable,
+      deletePosition,
     } = this.props
 
     const {
@@ -171,12 +175,16 @@ export default class KeyValueField extends Component {
       : null
     // dont render the delete component if this field is not editable
 
+    const dcLeft = deletePosition === 'left' ? dc : null
+    const dcRight = deletePosition === 'right' ? dc : null
+
     return (
       <div className={className}>
+        {dcLeft}
         {kc}
         :
         {vc}
-        {dc}
+        {dcRight}
       </div>
     )
   }
