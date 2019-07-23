@@ -108,6 +108,7 @@ export default class AbstractEditor extends Component {
             fieldKey: key,
             key: this.keyCounter.toString(),
             valueComponent: this.ListFieldComp,
+            fieldValue: obj,
           })
           this.keyCounter += 1
           stateChildren.push(newComp)

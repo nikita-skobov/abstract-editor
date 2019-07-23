@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import ListItem from './ListItem'
+import Label from './Label'
 import AddListItem from './AddKeyValueField'
 import DeleteField from './DeleteField'
 import { makeReactObject } from './utils'
@@ -25,13 +25,19 @@ const propTypes = {
 
   // eslint-disable-next-line
   startingItem: PropTypes.any,
+
+  currentValue: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+  ])),
 }
 
 const defaultProps = {
+  currentValue: [],
   startingItem: '',
   deletePosition: 'right',
   onUpdate: () => {},
-  valueComponent: ListItem,
+  valueComponent: Label,
   addItemComponent: AddListItem,
   deleteItemComponent: DeleteField,
 }
@@ -50,20 +56,26 @@ export default class ListField extends Component {
     const {
       valueComponent,
       addItemComponent,
-      startingItem,
       deleteItemComponent,
     } = props
     this.ValueComponent = makeReactObject(valueComponent)
     this.AddItemComponent = makeReactObject(addItemComponent)
     this.DeleteItemComponent = makeReactObject(deleteItemComponent)
 
+    const { props: VCProps } = this.ValueComponent
+    if (VCProps.fieldType === 'map') {
+      this.nextItem = {}
+    } else {
+      this.nextItem = ''
+    }
+
     const list = []
 
-    const startingList = [startingItem]
+    const startingList = props.currentValue
     startingList.forEach((elm) => {
       this.outputList.push(elm)
       list.push(this.fillWithKey(this.ValueComponent, {
-        outputTemplate: elm,
+        currentValue: elm,
       }))
     })
 
@@ -87,7 +99,9 @@ export default class ListField extends Component {
     return newComp
   }
 
-  itemUpdated(newval, pos) {
+  itemUpdated(nv, pos) {
+    const { target } = nv
+    const newval = target ? target.value : nv
     this.outputList[pos] = newval
 
     const { onUpdate } = this.props
@@ -118,18 +132,16 @@ export default class ListField extends Component {
   }
 
   addItemFunc() {
-    const { startingItem } = this.props
-
     this.setState((prevState) => {
       const { list } = prevState
       const lastChild = list[list.length - 1]
       const firstNChildren = list.slice(0, list.length - 1)
 
       const nextChild = this.fillWithKey(this.ValueComponent, {
-        outputTemplate: startingItem,
+        currentValue: this.nextItem,
       })
 
-      this.outputList.push(startingItem)
+      this.outputList.push(this.nextItem)
       const newChildren = [...firstNChildren, nextChild, lastChild]
       const newState = { list: newChildren }
       return newState
