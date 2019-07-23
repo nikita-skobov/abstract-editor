@@ -8,7 +8,11 @@ import { KEY_VALUE_CLASS } from './constants'
 
 const propTypes = {
   fieldKey: PropTypes.string,
-  fieldValue: PropTypes.string,
+  fieldValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+  ]),
   className: PropTypes.string,
   editable: PropTypes.bool,
   positionIndex: PropTypes.number,
