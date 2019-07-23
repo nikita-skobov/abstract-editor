@@ -4,6 +4,8 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import Comp, { defaultProps } from '../AbstractEditor'
 import KeyValueField from '../KeyValueField'
+import ListField from '../ListField'
+import MapField from '../MapField'
 
 
 describe('AbstractEditor component', () => {
@@ -12,12 +14,12 @@ describe('AbstractEditor component', () => {
     expect(wrap.exists()).toBe(false)
   })
 
-  it('should render something if at least provided a outputTemplate and renderOutputTemplate', () => {
+  it('should render something if at least provided a currentValue and renderOutputTemplate', () => {
     const wrap = shallow(
       <Comp
         {...defaultProps}
         renderOutputTemplate
-        outputTemplate={{ x: 1 }}
+        currentValue={{ x: 1 }}
       />,
     )
     expect(wrap.exists()).toBe(true)
@@ -28,29 +30,29 @@ describe('AbstractEditor component', () => {
       <Comp
         {...defaultProps}
         renderOutputTemplate
-        outputTemplate={{ x: 1 }}
+        currentValue={{ x: 1 }}
       />,
     )
 
     expect(wrap.find('KeyValueField').exists()).toBe(true)
   })
 
-  it('should render a KeyValueField for every key in outputTemplate (at depth 1) if renderOutputTemplate is true', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
-    const remainingKeys = Object.keys(outputTemplate)
+  it('should render a KeyValueField for every key in currentValue (at depth 1) if renderOutputTemplate is true', () => {
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
+    const remainingKeys = Object.keys(currentValue)
     const wrap = shallow(
       <Comp
         {...defaultProps}
         renderOutputTemplate
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       />,
     )
 
     expect(wrap.find('KeyValueField')).toHaveLength(remainingKeys.length)
   })
 
-  it('should render a child instead of the outputTemplate label if present', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
+  it('should render a child instead of the currentValue label if present', () => {
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
     const weirdField = 'somePropThatWouldntBePresentOtherwise'
     const weirdValue = 'hi'
     const testProps = { [weirdField]: weirdValue }
@@ -58,7 +60,7 @@ describe('AbstractEditor component', () => {
       <Comp
         {...defaultProps}
         renderOutputTemplate
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       >
         <KeyValueField {...testProps} name="y" />
       </Comp>,
@@ -75,31 +77,31 @@ describe('AbstractEditor component', () => {
   })
 
   it('should call the user onUpdate callback if a key-value is changed', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
     const onUpdate = jest.fn(() => {})
     const wrap = shallow(
       <Comp
         {...defaultProps}
         onUpdate={onUpdate}
         renderOutputTemplate
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       />,
     )
 
     const { updateKeyValue } = wrap.instance()
     // updateKeyValue(newKey, newValue, oldKey)
     updateKeyValue('x', '100', 'x', 0)
-    // x is the first key in the outputTemplate
+    // x is the first key in the currentValue
     // so it has a positionIndex of 0
     expect(onUpdate).toHaveBeenCalled()
   })
 
   it('should add a key-value field if addKeyValue is called', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
     const wrap = mount(
       <Comp
         renderOutputTemplate
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       />,
     )
 
@@ -110,14 +112,14 @@ describe('AbstractEditor component', () => {
   })
 
   it('should add a AddKeyValueComponent if fieldType=map (and it should be at the end of the state children list)', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
-    const lastLabelIndex = Object.keys(outputTemplate).length - 1
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
+    const lastLabelIndex = Object.keys(currentValue).length - 1
     const wrap = shallow(
       <Comp
         {...defaultProps}
         renderOutputTemplate
         fieldType="map"
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       />,
     )
 
@@ -127,16 +129,16 @@ describe('AbstractEditor component', () => {
   })
 
   it('should remove children from state and alter defaultTemplate on removeField and notify user that template has been changed', () => {
-    const outputTemplate = { x: 1, y: 2, deep: { deepX: 3 } }
+    const currentValue = { x: 1, y: 2, deep: { deepX: 3 } }
     const withoutX = { y: 2, deep: { deepX: 3 } }
     const onUpdate = jest.fn(() => {})
-    const numFields = Object.keys(outputTemplate).length
+    const numFields = Object.keys(currentValue).length
     const wrap = mount(
       <Comp
         renderOutputTemplate
         onUpdate={onUpdate}
         fieldType="map"
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       />,
     )
 
@@ -150,18 +152,18 @@ describe('AbstractEditor component', () => {
   })
 
   it('should call onUpdate with nested state changes', () => {
-    const outputTemplate = { x: 1, y: 2, deep: {} }
+    const currentValue = { x: 1, y: 2, deep: {} }
     const onUpdate = jest.fn(() => {})
     const wrap = mount(
       <Comp
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
         onUpdate={onUpdate}
       >
         <KeyValueField name="x" />
         <KeyValueField name="y" />
         <KeyValueField
           name="deep"
-          valueComponent={<Comp fieldType="map" outputTemplate={{ defaultValue: 123 }} />}
+          valueComponent={<Comp fieldType="map" currentValue={{ defaultValue: 123 }} />}
         />
       </Comp>,
     )
@@ -183,7 +185,7 @@ describe('AbstractEditor component', () => {
   })
 
   it('should give positionIndex to all KeyValueField children', () => {
-    const outputTemplate = {
+    const currentValue = {
       x: 1,
       y: 2,
       deep: {},
@@ -193,13 +195,13 @@ describe('AbstractEditor component', () => {
     const wrap = mount(
       <Comp
         renderOutputTemplate
-        outputTemplate={outputTemplate}
+        currentValue={currentValue}
       >
         <KeyValueField name="x" />
         <KeyValueField name="y" />
         <KeyValueField
           name="deep"
-          valueComponent={<Comp fieldType="map" renderOutputTemplate outputTemplate={{ defaultValue: 123 }} />}
+          valueComponent={<Comp fieldType="map" renderOutputTemplate currentValue={{ defaultValue: 123 }} />}
         />
       </Comp>,
     )
@@ -207,5 +209,41 @@ describe('AbstractEditor component', () => {
     wrap.find('KeyValueField').forEach((elm) => {
       expect(typeof elm.prop('positionIndex')).toBe('number')
     })
+  })
+
+  it('should use prop components if provided', () => {
+    const currentValue = { x: 1, y: 2, deep: { a: 'b' }, list: [] }
+
+    const customProp1 = 'cp1'
+    const customProp2 = 'cp2'
+    const customProp3 = <KeyValueField deletePosition="left" />
+    const customKVC = <KeyValueField className={customProp1} />
+    const customLFC = <ListField startingItem={customProp2} deletePosition="left" />
+    const customMFC = <MapField renderOutputTemplate keyValueComponent={customProp3} />
+
+
+    const wrap = mount(
+      <Comp
+        renderOutputTemplate
+        currentValue={currentValue}
+        keyValueComponent={customKVC}
+        listFieldComponent={customLFC}
+        mapFieldComponent={customMFC}
+      />,
+    )
+
+
+    const firstKVField = wrap.find('KeyValueField').first()
+    expect(firstKVField.prop('className')).toBe(customProp1)
+    expect(firstKVField.first().prop('className')).toBe(customProp1)
+
+    const firstLField = wrap.find('ListField').first()
+    expect(firstLField.prop('startingItem')).toBe(customProp2)
+    expect(firstLField.find('input').prop('defaultValue')).toBe(customProp2)
+
+    const firstMField = wrap.find('MapField').first()
+    expect(firstMField.prop('keyValueComponent')).toBe(customProp3)
+    expect(firstMField.find('AbstractEditor').prop('keyValueComponent')).toBe(customProp3)
+    expect(firstMField.find('KeyValueField').prop('deletePosition')).toBe('left')
   })
 })

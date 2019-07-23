@@ -4,10 +4,12 @@ import AbstractEditor from './AbstractEditor'
 
 const propTypes = {
   fieldType: PropTypes.string,
+  currentValue: PropTypes.instanceOf(Object),
 }
 
 const defaultProps = {
   fieldType: 'map',
+  currentValue: {},
 }
 
 export default function MapField(props) {
@@ -16,7 +18,7 @@ export default function MapField(props) {
     onUpdate,
   } = props
 
-  return <AbstractEditor fieldType={fieldType} onUpdate={onUpdate} />
+  return <AbstractEditor {...props} fieldType={fieldType} onUpdate={onUpdate} />
 }
 
 MapField.propTypes = propTypes

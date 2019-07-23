@@ -49,7 +49,7 @@ export default class AbstractEditor extends Component {
     this.fillWithKey = this.fillWithKey.bind(this)
     this.fillComponentsWithKeys = this.fillComponentsWithKeys.bind(this)
 
-    this.defaultTemplate = { ...props.outputTemplate }
+    this.defaultTemplate = { ...props.currentValue }
     this.defaultTemplateKeys = Object.keys(this.defaultTemplate)
     this.ownerKeyMap = {}
     this.keyCounter = 0
@@ -71,7 +71,7 @@ export default class AbstractEditor extends Component {
       // if the outputTemplate contains keys that
       // are not present in the children,
       // add children based on the outputTemplate
-      const outputKeys = Object.keys(props.outputTemplate)
+      const outputKeys = Object.keys(props.currentValue)
       stateChildren.forEach((child) => {
         if (child.props && child.props.name) {
           const index = outputKeys.indexOf(child.props.name)
@@ -83,7 +83,7 @@ export default class AbstractEditor extends Component {
       // keys present in the outputTemplate, but were not provided
       // as renderable children
       outputKeys.forEach((key) => {
-        const obj = props.outputTemplate[key]
+        const obj = props.currentValue[key]
         if (typeof obj === 'string' || typeof obj === 'number') {
           // treat it as a standard key-value field
           const { KeyValueComp } = this
@@ -120,6 +120,7 @@ export default class AbstractEditor extends Component {
             editable: isEditable,
             onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
             fieldKey: key,
+            fieldValue: obj,
             key: this.keyCounter.toString(),
             valueComponent: this.MapFieldComp,
           })
