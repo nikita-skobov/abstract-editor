@@ -27,6 +27,7 @@ const propTypes = {
     PropTypes.func,
     PropTypes.element,
   ]),
+  deletePosition: PropTypes.oneOf(['left', 'right']),
 
   // eslint-disable-next-line
   startingItem: PropTypes.any,
@@ -35,6 +36,7 @@ const defaultStartingItem = ''
 const defaultProps = {
   startingItem: defaultStartingItem,
   startingList: [defaultStartingItem],
+  deletePosition: 'right',
   onUpdate: () => {},
   valueComponent: ListItem,
   addItemComponent: AddListItem,
@@ -142,6 +144,7 @@ export default class ListField extends Component {
 
   render() {
     const { list } = this.state
+    const { deletePosition } = this.props
 
     const output = []
     list.forEach((item, ind) => {
@@ -149,13 +152,23 @@ export default class ListField extends Component {
       if (props && props.fieldType === 'add-item') {
         output.push(item)
       } else {
-        output.push(React.cloneElement(item, {
+        const it = React.cloneElement(item, {
           onUpdate: (nv) => { this.itemUpdated(nv, ind) },
-        }))
-        output.push(React.cloneElement(this.DeleteItemComponent, {
+        })
+        const del = React.cloneElement(this.DeleteItemComponent, {
           onClick: () => { this.itemDeleted(ind) },
-          key: `${item.key}-delete`,
-        }))
+        })
+
+        const delLeft = deletePosition === 'left' ? del : null
+        const delRight = deletePosition === 'right' ? del : null
+
+        output.push(
+          <div key={item.key}>
+            {delLeft}
+            {it}
+            {delRight}
+          </div>,
+        )
       }
     })
     return output

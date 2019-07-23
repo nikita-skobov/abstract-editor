@@ -24,11 +24,7 @@ export default function ListItem(props) {
     outerUpdate(value)
   }
 
-  return (
-    <div>
-      <Label onUpdate={innerUpdate} defaultValue={outputTemplate} />
-    </div>
-  )
+  return <Label onUpdate={innerUpdate} defaultValue={outputTemplate} />
 }
 
 ListItem.propTypes = propTypes
