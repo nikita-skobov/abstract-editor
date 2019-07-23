@@ -6,7 +6,6 @@ import Label from './Label'
 const propTypes = {
   outputTemplate: PropTypes.string,
   onUpdate: PropTypes.func,
-  positionIndex: PropTypes.number.isRequired,
 }
 const defaultProps = {
   outputTemplate: '',
@@ -16,14 +15,13 @@ const defaultProps = {
 export default function ListItem(props) {
   const {
     onUpdate: outerUpdate,
-    positionIndex,
     outputTemplate,
   } = props
 
   const innerUpdate = (e) => {
     const { target } = e
     const { value } = target
-    outerUpdate(value, positionIndex)
+    outerUpdate(value)
   }
 
   return (

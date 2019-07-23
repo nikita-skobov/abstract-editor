@@ -150,7 +150,6 @@ export default class ListField extends Component {
         output.push(item)
       } else {
         output.push(React.cloneElement(item, {
-          positionIndex: ind,
           onUpdate: (nv) => { this.itemUpdated(nv, ind) },
         }))
         output.push(React.cloneElement(this.DeleteItemComponent, {
