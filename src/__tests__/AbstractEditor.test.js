@@ -212,13 +212,13 @@ describe('AbstractEditor component', () => {
   })
 
   it('should use prop components if provided', () => {
-    const currentValue = { x: 1, y: 2, deep: { a: 'b' }, list: [] }
+    const currentValue = { x: 1, y: 2, deep: { a: 'b' }, list: [''] }
 
     const customProp1 = 'cp1'
-    const customProp2 = 'cp2'
+    const customProp2 = 'left'
     const customProp3 = <KeyValueField deletePosition="left" />
     const customKVC = <KeyValueField className={customProp1} />
-    const customLFC = <ListField startingItem={customProp2} deletePosition="left" />
+    const customLFC = <ListField deletePosition={customProp2} />
     const customMFC = <MapField renderOutputTemplate keyValueComponent={customProp3} />
 
 
@@ -238,8 +238,12 @@ describe('AbstractEditor component', () => {
     expect(firstKVField.first().prop('className')).toBe(customProp1)
 
     const firstLField = wrap.find('ListField').first()
-    expect(firstLField.prop('startingItem')).toBe(customProp2)
-    expect(firstLField.find('input').prop('defaultValue')).toBe(customProp2)
+    let deleteFieldIndex = -1
+    firstLField.find('div').first().children().forEach((child, ind) => {
+      if (child.name() === 'DeleteField') deleteFieldIndex = ind
+    })
+    expect(firstLField.prop('deletePosition')).toBe(customProp2)
+    expect(deleteFieldIndex).toBe(0)
 
     const firstMField = wrap.find('MapField').first()
     expect(firstMField.prop('keyValueComponent')).toBe(customProp3)
