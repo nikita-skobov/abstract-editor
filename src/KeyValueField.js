@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { makeReactObject } from './utils'
 import Label from './Label'
 import DelteField from './DeleteField'
-import { KEY_VALUE_CLASS } from './constants'
+import Seperator from './Seperator'
+import { KEY_VALUE_CLASS, SEPERATOR_CLASS } from './constants'
 
 const propTypes = {
   fieldKey: PropTypes.string,
@@ -23,6 +24,14 @@ const propTypes = {
     PropTypes.any,
   ]),
   keyComponent: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.func,
+  ]),
+  seperatorClass: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.any,
+  ]),
+  seperatorComponent: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.func,
   ]),
@@ -62,6 +71,8 @@ const defaultProps = {
   keyComponent: Label,
   keyClass: undefined,
   className: KEY_VALUE_CLASS,
+  seperatorClass: SEPERATOR_CLASS,
+  seperatorComponent: Seperator,
   fieldType: 'key-value',
   fieldKey: '',
   fieldValue: '',
@@ -83,6 +94,7 @@ export default class KeyValueField extends Component {
     this.ValueComponent = makeReactObject(props.valueComponent)
     this.KeyComponent = makeReactObject(props.keyComponent)
     this.DeleteComponent = makeReactObject(props.deleteComponent)
+    this.SeperatorComponent = makeReactObject(props.seperatorComponent)
   }
 
   keyChange({ target }) {
@@ -150,6 +162,7 @@ export default class KeyValueField extends Component {
       valueClass,
       keyClass,
       editable,
+      seperatorClass,
       deletePosition,
     } = this.props
 
@@ -157,6 +170,7 @@ export default class KeyValueField extends Component {
       ValueComponent,
       KeyComponent,
       DeleteComponent,
+      SeperatorComponent,
     } = this
 
     const kc = React.cloneElement(KeyComponent, {
@@ -170,6 +184,10 @@ export default class KeyValueField extends Component {
       className: valueClass,
       currentValue: fieldValue,
       onUpdate: this.valueChange,
+    })
+
+    const sep = React.cloneElement(SeperatorComponent, {
+      className: seperatorClass,
     })
 
     const dc = editable
@@ -186,7 +204,7 @@ export default class KeyValueField extends Component {
       <div className={className}>
         {dcLeft}
         {kc}
-        :
+        {sep}
         {vc}
         {dcRight}
       </div>
