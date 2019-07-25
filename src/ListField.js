@@ -23,6 +23,18 @@ const propTypes = {
   ]),
   deletePosition: PropTypes.oneOf(['left', 'right']),
 
+  // listItemComponent: PropTypes.oneOfType([
+  //   PropTypes.func,
+  //   PropTypes.element,
+  // ]),
+  listItemClass: PropTypes.string,
+
+  wrapListComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element,
+    PropTypes.bool,
+  ]),
+
   // eslint-disable-next-line
   startingItem: PropTypes.any,
 
@@ -40,6 +52,8 @@ const defaultProps = {
   valueComponent: Label,
   addItemComponent: AddListItem,
   deleteItemComponent: DeleteField,
+  listItemClass: 'list-item',
+  wrapListComponent: false,
 }
 
 export default class ListField extends Component {
@@ -57,10 +71,12 @@ export default class ListField extends Component {
       valueComponent,
       addItemComponent,
       deleteItemComponent,
+      listItemComponent,
     } = props
     this.ValueComponent = makeReactObject(valueComponent)
     this.AddItemComponent = makeReactObject(addItemComponent)
     this.DeleteItemComponent = makeReactObject(deleteItemComponent)
+    this.ListItemComponent = makeReactObject(listItemComponent)
 
     const { props: VCProps } = this.ValueComponent
     if (VCProps.fieldType === 'map') {
@@ -131,14 +147,14 @@ export default class ListField extends Component {
     })
   }
 
-  addItemFunc() {
+  addItemFunc(arg) {
     this.setState((prevState) => {
       const { list } = prevState
       const lastChild = list[list.length - 1]
       const firstNChildren = list.slice(0, list.length - 1)
 
       const nextChild = this.fillWithKey(this.ValueComponent, {
-        currentValue: this.nextItem,
+        currentValue: arg || this.nextItem,
       })
 
       this.outputList.push(this.nextItem)
@@ -150,7 +166,7 @@ export default class ListField extends Component {
 
   render() {
     const { list } = this.state
-    const { deletePosition } = this.props
+    const { deletePosition, listItemClass, wrapListComponent } = this.props
 
 
     const output = []
@@ -170,7 +186,7 @@ export default class ListField extends Component {
         const delRight = deletePosition === 'right' ? del : null
 
         output.push(
-          <div key={item.key}>
+          <div className={listItemClass} key={item.key}>
             {delLeft}
             {it}
             {delRight}
@@ -178,6 +194,13 @@ export default class ListField extends Component {
         )
       }
     })
+
+    if (wrapListComponent) {
+      return React.cloneElement(wrapListComponent, {
+        children: output,
+      })
+    }
+
     return output
   }
 }
