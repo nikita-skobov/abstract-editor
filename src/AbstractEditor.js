@@ -91,7 +91,7 @@ export default class AbstractEditor extends Component {
           const newComp = React.cloneElement(KeyValueComp, {
             name: key,
             editable: isEditable,
-            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            onRemove: isEditable ? this.removeField : () => { },
             fieldKey: key,
             key: this.keyCounter.toString(),
           })
@@ -104,7 +104,7 @@ export default class AbstractEditor extends Component {
           const newComp = React.cloneElement(KeyValueComp, {
             name: key,
             editable: isEditable,
-            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            onRemove: isEditable ? this.removeField : () => { },
             fieldKey: key,
             key: this.keyCounter.toString(),
             valueComponent: this.ListFieldComp,
@@ -119,7 +119,7 @@ export default class AbstractEditor extends Component {
           const newComp = React.cloneElement(KeyValueComp, {
             name: key,
             editable: isEditable,
-            onRemove: isEditable ? this.removeField : () => { console.log('cannot remove this field') },
+            onRemove: isEditable ? this.removeField : () => { },
             fieldKey: key,
             fieldValue: obj,
             key: this.keyCounter.toString(),
@@ -282,7 +282,7 @@ export default class AbstractEditor extends Component {
           child,
           {
             onUpdate: this.updateKeyValue,
-            onRemove: this.keyIsEditable(name) ? this.removeField : (a, f) => {console.log(`should not remove ${f}`)},
+            onRemove: this.keyIsEditable(name) ? this.removeField : (a, f) => { },
             editable: this.keyIsEditable(name),
             fieldKey: childName,
             positionIndex: ind,
