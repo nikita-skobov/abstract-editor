@@ -6,6 +6,29 @@ import AddListItem from './AddKeyValueField'
 import DeleteField from './DeleteField'
 import { makeReactObject } from './utils'
 
+export function moveArray(arr, oi, ni) {
+  let oldi = oi
+  let newi = ni
+
+  while (oldi < 0) {
+    oldi += arr.length
+  }
+
+  while (newi < 0) {
+    newi += arr.length
+  }
+
+  if (newi >= arr.length) {
+    let k = newi - arr.length + 1
+    while (k > 0) {
+      arr.push(undefined)
+      k -= 1
+    }
+  }
+
+  arr.splice(newi, 0, arr.splice(oldi, 1)[0])
+}
+
 const propTypes = {
   onUpdate: PropTypes.func,
 
@@ -126,6 +149,35 @@ export default class ListField extends Component {
     }
   }
 
+  itemMoved(itemPosition, moveBy) {
+    const newPosition = itemPosition + moveBy
+    if (newPosition > this.outputList.length - 1 || newPosition < 0) {
+      return null
+    }
+
+    moveArray(this.outputList, itemPosition, newPosition)
+
+    const { onUpdate } = this.props
+    if (onUpdate && typeof onUpdate === 'function') {
+      onUpdate([...this.outputList])
+    }
+
+    this.setState((prevState) => {
+      const newState = prevState
+      const { list } = prevState
+      const modifiableChildren = [...list]
+      moveArray(modifiableChildren, itemPosition, newPosition)
+      // the component that calls this callback function knows
+      // its positionIndex via a prop. it uses that position index
+      // to let this component know which element to remove
+      // from the state list array.
+      newState.list = modifiableChildren
+      return newState
+    })
+
+    return null
+  }
+
   itemDeleted(pos) {
     this.outputList.splice(pos, 1)
     const { onUpdate } = this.props
@@ -187,6 +239,7 @@ export default class ListField extends Component {
         })
         const del = React.cloneElement(this.DeleteItemComponent, {
           onClick: () => { this.itemDeleted(ind) },
+          onMove: (pos) => { this.itemMoved(ind, pos) },
         })
 
         const delLeft = deletePosition === 'left' ? del : null
