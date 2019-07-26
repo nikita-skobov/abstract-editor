@@ -153,13 +153,20 @@ export default class ListField extends Component {
       const lastChild = list[list.length - 1]
       const firstNChildren = list.slice(0, list.length - 1)
 
+      const nextValue = startingValue || this.nextItem
       const nextChild = this.fillWithKey(useComponent || this.ValueComponent, {
-        currentValue: startingValue || this.nextItem,
+        currentValue: nextValue,
       })
 
-      this.outputList.push(this.nextItem)
+      this.outputList.push(nextValue)
       const newChildren = [...firstNChildren, nextChild, lastChild]
       const newState = { list: newChildren }
+
+      const { onUpdate } = this.props
+      if (onUpdate && typeof onUpdate === 'function') {
+        onUpdate([...this.outputList])
+      }
+
       return newState
     })
   }
