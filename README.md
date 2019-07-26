@@ -32,12 +32,12 @@ export function MyComponent(props) {
 
 Will render a skeleton structure like this:
 
-![ex1](./docs/ex1.jpg?raw=true "Title")
+![ex1](./docs/ex1.jpg?raw=true "ex1")
 
 If you click on the plus sign next to mapKey, you can expand the mapKey object
 And add your own key/values to it.
 
-![ex2](./docs/ex1-expanded.jpg?raw=true "Title")
+![ex2](./docs/ex1-expanded.jpg?raw=true "ex1-expanded")
 
 Any time any of the fields are update, the onUpdate function is called with the new root object. So in the above case, your last onUpdate call would have:
 
@@ -196,9 +196,9 @@ export function MyComponent(props) {
 
 Which renders this:
 
-![ex2](./docs/ex2.JPG?raw=true "Title")
+![ex2](./docs/ex2.JPG?raw=true "ex2")
 
 And when the user clicks the various buttons, it expands to this:
 
-![ex2-expanded](./docs/ex2-expanded.JPG?raw=true "Title")
+![ex2-expanded](./docs/ex2-expanded.JPG?raw=true "ex2-expanded")
 
