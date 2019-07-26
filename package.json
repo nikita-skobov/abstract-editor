@@ -1,6 +1,6 @@
 {
   "name": "abstract-editor",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "a react component that renders a json object editor that can be modified by the user",
   "main": "lib/index.js",
   "scripts": {
