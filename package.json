@@ -1,7 +1,7 @@
 {
   "name": "abstract-editor",
   "version": "1.0.0",
-  "description": "",
+  "description": "a react component that renders a json object editor that can be modified by the user",
   "main": "lib/index.js",
   "scripts": {
     "build": "./node_modules/.bin/babel src --out-dir lib --ignore src/__tests__/ --ignore src/setupTests.js",
@@ -15,9 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/nikita-skobov/abstract-editor.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["abstract", "editor", "react", "component", "form"],
+  "author": "Nikita Skobov",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nikita-skobov/abstract-editor/issues"
   },
